@@ -22,8 +22,13 @@
 
 1. Nommage des méthodes <br>
     Les différentes méthodes qui seront définies au cours de ce projet, sont écrits en majuscule et de la manière suivante : NOM DE LA FONCTIONNALITÉ A L'INFINITIF_NOM DU FICHIER . <br>
-    <b> ex : </b> AJOUTER_CLIENTS
+    <b> ex : </b> AJOUTER_CLIENTS <br>
+    
+    <u>Remarque :</u> uné méthode ne peut pas avoir un seul mot dans son nom.
 
+2. Organisation des méthodes <br>
+    Nous allons répartir les différentes méthodes créer durant la réalisation de ce projet dans d'autres fichiers que le fichier BoutiqueComics.cob qui est le programme principal de la manière suivante : les méthodes relatives à un fichier spécifique sont dans un même fichier.cob.
+    <b> ex : </b> les méthodes liées aux clients sont présents dans le fichier Clients.cob
 
 
 
