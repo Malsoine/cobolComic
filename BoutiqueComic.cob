@@ -4,35 +4,47 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           select felec assign to "electeurs.dat"
-           organization sequential
-           access mode is sequential
-           file status is cr_felec.
-
-           select felecAge assign to "electeursAge.dat"
-           organization sequential
-           access mode is sequential
-           file status is cr_felecAge.
-
-           select fbureau assign to "bureaux.dat"
+           select fachats assign to "achats.dat"
            organization indexed
            access mode is dynamic
-           record key is fbu_code
-           alternate record key is fbu_ville
-           alternate record key is fbu_region WITH DUPLICATES
-           file status is cr_fbureau.
+           record key is fa_id
+           alternate record key is fa_titrecomics WITH DUPLICATES
+           file status is cr_fachats.
+
+           select fventes assign to "ventes.dat"
+           organization indexed
+           access mode is dynamic
+           record key is fv_id
+           alternate record key is fv_datevente WITH DUPLICATES
+           file status is cr_fventes.
+
+           select finventaire assign to "inventaire.dat"
+           organization indexed
+           access mode is dynamic
+           record key is fi_titre
+           alternate record key is fi_auteur WITH DUPLICATES
+           file status is cr_finventaire.
+
+           select fclients assign to "clients.dat"
+           organization indexed
+           access mode is dynamic
+           record key is fc_id
+           alternate record key is fc_ptFidelite WITH DUPLICATES
+           file status is cr_fclients.
+
 
 
        DATA DIVISION.
 
        FILE SECTION.
-       FD felec.
-           01 tamp_felec.
-                02 fe_idE PIC 9(15).
-                02 fe_nom PIC A(30).
-                02 fe_prenom PIC A(30).
-                02 fe_age PIC 9(3).
-                02 fe_villeHabitation PIC A(30).
+       FD fachats.
+           01 tamp_fachats.
+                02 fa_id PIC 9(15).
+                02 fa_dateAchat PIC X(10).
+                02 fa_titreComics PIC A(30).
+                02 fa_quantite PIC 9(4).
+                02 fa_prixAchat PIC 9(6)v99.
+                02 fa_nomFournisseur PIC A(30).
        FD felecAge.
            01 tamp_felecAge.
                 02 fea_idE PIC 9(15).
