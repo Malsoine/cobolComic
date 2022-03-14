@@ -43,7 +43,7 @@
                 02 fa_dateAchat PIC X(10).
                 02 fa_titreComics PIC A(30).
                 02 fa_quantite PIC 9(4).
-                02 fa_prixAchat PIC 9(6)v99.
+                02 fa_prixAchat PIC 9(6)v9(2).
                 02 fa_nomFournisseur PIC A(30).
        FD fventes.
            01 tamp_fvente.
@@ -52,7 +52,7 @@
                     03 fv_statut PIC 9(15).
                 02 fv_dateVente PIC X(10).
                 02 fv_titreComics PIC A(30).
-                02 fv_prixVente PIC 9(6)v99.
+                02 fv_prixVente PIC 9(6)v9(2).
                 02 fv_client PIC 9(15).
        FD finventaire.
            01 tamp_finventaire.
@@ -60,7 +60,7 @@
                02 fi_titre PIC A(30).
                02 fi_auteur PIC A(30).
                02 fi_quantite PIC 9(4).
-               02 fi_prix PIC 9(6)v99.
+               02 fi_prix PIC 9(6)v9(2).
        FD fclients.
            01 tamp_fclient.
                02 fc_id PIC 9(15).
@@ -76,7 +76,34 @@
            77 cr_fventes PIC 9(2).
            77 cr_finventaire PIC 9(2).
            77 cr_fclients PIC 9(2).
-
+           01 achat.
+                02 ac_id PIC 9(15).
+                02 ac_dateAchat PIC X(10).
+                02 ac_titreComics PIC A(30).
+                02 ac_quantite PIC 9(4).
+                02 ac_prixAchat PIC 9(6)v9(2).
+                02 ac_nomFournisseur PIC A(30).
+           01 vente.
+               02 ve_cle.
+                    03 ve_id PIC 9(15).
+                    03 ve_statut PIC 9(15).
+                02 ve_dateVente PIC X(10).
+                02 ve_titreComics PIC A(30).
+                02 ve_prixVente PIC 9(6)v9(2).
+                02 ve_client PIC 9(15).
+           01 inventaire.
+               02 in_id PIC 9(15).
+               02 in_titre PIC A(30).
+               02 in_auteur PIC A(30).
+               02 in_quantite PIC 9(4).
+               02 in_prix PIC 9(6)v9(2).
+           01 client.
+               02 cl_id PIC 9(15).
+               02 cl_prenom PIC A(30).
+               02 cl_nom PIC A(30).
+               02 cl_tel PIC 9(10).
+               02 cl_mail PIC A(30).
+               02 cl_ptsFidelite PIC 9(3).
        PROCEDURE DIVISION.
       **Achats
            OPEN I-O fachats
