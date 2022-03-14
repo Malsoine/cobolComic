@@ -10,7 +10,7 @@
 
 2. Variables globales  <br>
     En ce qui concerne le nommage des varibales globales, nous utilisons la méthode d'écriture camelCase. <br>
-    <b> ex : </b> un attribut quelconque est nommé : quelconqueAttribut
+    <b> ex : </b> un attribut quelconque est nommé : quelconqueAttribut, si on définit un nouveau client l'attribut nom est nommé : cl_nom.
  
  3. Variables locales <br>
     En ce qui concerne le nommage des varibles locales, nous les nommons en utilisant la méthode d'écriture camelCase et de la manière suivante : les 2 premiers lettres du nom du fichier correspondant + Nom de l'attribut. <br>
