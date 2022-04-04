@@ -61,13 +61,46 @@
                 CLOSE finventaire. 
 
         RECHERCHER_REFERENCE.
-                DISPLAY "Entrez le nom du comic cherché"
-                ACCEPT titreRef
-                OPEN INPUT finventaire
-                MOVE titreRef TO fi_titre
-                READ finventaire
-                INVALID KEY DISPLAY "Ce comic n'existe pas"
-                NOT INVALID KEY DISPLAY "Comic existant"
-                END-READ
-                CLOSE finventaire. 
+                DISPLAY "Chercher avec le titre (1) ou l'auteur (2) du comic?"
+                ACCEPT choixRechercheC
+                EVALUATE choixRechercheC
+                WHEN 1
+                        DISPLAY "Entrez le nom du comic cherché"
+                        ACCEPT titreRef
+                        OPEN INPUT finventaire
+                        MOVE titreRef TO fi_titre
+                        READ finventaire
+                        INVALID KEY DISPLAY "Ce comic n'existant pas" 
+                        NOT INVALID KEY 
+                        DISPLAY "Nom du comic : ", fi_titre
+                        DISPLAY "Auteur du comic : ", fi_auteur
+                        DISPLAY "Quantité disponible en stock : ", fi_quantite
+                        DISPLAY "Prix du comic : ", fi_prix
+                        END-READ
+                WHEN 2
+                        MOVE 1 TO Wfin
+                        DISPLAY "Entrez le nom de l'auteur cherche"
+                        ACCEPT nomAuteur
+                        OPEN INPUT finventaire
+                        MOVE nomAuteur TO fi_auteur
+                        START finventaire, KEY IS = fi_auteur
+                        INVALID KEY DISPLAY "Aucun comic de cet auteur n'existe"
+                        NOT INVALID KEY 
+                            PERFORM WITH TEST AFTER UNTIL Wfin = 0
+                                READ finventaire NEXT
+                                AT END MOVE 0 TO Wfin
+                                NOT AT END
+                                DISPLAY "Nom du comic : ", fi_titre
+                                DISPLAY "Auteur du comic : ", fi_auteur
+                                DISPLAY "Quantité disponible en stock : ", fi_quantite
+                                DISPLAY "Prix du comic : ", fi_prix
+                                END-READ
+                            END-PERFORM
+                        END-START
+                   WHEN OTHER
+                        DISPLAY "Choix invalide"
+                   END-EVALUATE     
+                   CLOSE finventaire. 
+
+
 
