@@ -56,7 +56,7 @@
            EVALUATE choixSupprClient
            WHEN 1
                DISPLAY "Suppression par id"
-               DISPLAY "Entrez l'id"
+               DISPLAY "Entrez l'id : "
                ACCEPT cl_id
                MOVE cl_id TO fc_id
                   delete fclients record
@@ -67,9 +67,9 @@
                end-delete
            WHEN 2
                 DISPLAY "Suppression par nom et prénom"
-                DISPLAY "Entrez le nom"
+                DISPLAY "Entrez le nom : "
                 ACCEPT cl_nom
-                DISPLAY "Entrez le prénom"
+                DISPLAY "Entrez le prénom : "
                 ACCEPT cl_prenom
                 PERFORM WITH TEST AFTER UNTIL fichierFin=1
                    READ fclients NEXT
@@ -86,6 +86,28 @@
                 END-IF
            WHEN OTHER
                    DISPLAY "Choix invalide"
+                   PERFORM SUPPR_CLIENT
 
            END-EVALUATE
+           close fclients.
+
+           CONSULTER_PTS_FIDELITE.
+           OPEN INPUT fclients
+           MOVE 0 TO testNomClient
+           DISPLAY "Entrez le nom : "
+           ACCEPT cl_nom
+           DISPLAY "Entrez le prénom : "
+           ACCEPT cl_prenom
+           PERFORM WITH TEST AFTER UNTIL fichierFin=1
+               READ fclients NEXT
+               AT END MOVE 1 TO fichierFin
+               NOT AT END
+               IF fc_nom = cl_nom AND fc_prenom = cl_prenom THEN
+                  MOVE 1 TO testNomClient
+               END-IF
+               END-READ
+           END-PERFORM
+           IF testNomClient = 1
+               DISPLAY "Points de fidélité : ", fc_ptsFidelite
+           END-IF
            close fclients.
