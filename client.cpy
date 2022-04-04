@@ -1,4 +1,4 @@
-           AJOUTCLIENT.
+           AJOUT_CLIENT.
            OPEN INPUT fclients
            MOVE 0 TO fichierFin
            MOVE 0 TO testClient
@@ -46,7 +46,8 @@
                CLOSE fclients
            END-IF.
 
-           SUPPRCLIENT.
+           SUPPR_CLIENT.
+           OPEN I-O fclients
            MOVE 0 to choixSupprClient
            MOVE 0 TO fichierFin
            MOVE 0 TO testNomClient
@@ -54,7 +55,16 @@
            ACCEPT choixSupprClient
            EVALUATE choixSupprClient
            WHEN 1
-               DISPLAY "oui"
+               DISPLAY "Suppression par id"
+               DISPLAY "Entrez l'id"
+               ACCEPT cl_id
+               MOVE cl_id TO fc_id
+                  delete fclients record
+                  invalid key
+                 display "Suppression impossible de  " fc_id end-display
+                  not invalid key
+               display "Suppresion effectuée !" end-display
+               end-delete
            WHEN 2
                 DISPLAY "Suppression par nom et prénom"
                 DISPLAY "Entrez le nom"
@@ -76,4 +86,6 @@
                 END-IF
            WHEN OTHER
                    DISPLAY "Choix invalide"
-           END-EVALUATE.
+
+           END-EVALUATE
+           close fclients.
