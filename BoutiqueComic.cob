@@ -32,11 +32,9 @@
            alternate record key is fc_ptsFidelite WITH DUPLICATES
            file status is cr_fclients.
 
+DATA DIVISION.
 
-
-       DATA DIVISION.
-
-       FILE SECTION.
+FILE SECTION.
        FD fachats.
            01 tamp_fachats.
                 02 fa_id PIC 9(15).
@@ -71,7 +69,7 @@
                02 fc_ptsFidelite PIC 9(3).
 
 
-       WORKING-STORAGE SECTION.
+WORKING-STORAGE SECTION.
            77 cr_fachats PIC 9(2).
            77 cr_fventes PIC 9(2).
            77 cr_finventaire PIC 9(2).
@@ -83,6 +81,9 @@
            77 trouve PIC 9(1).
            77 idRef PIC 9(15).
            77 titreRef PIC A(30).
+           77 choixRechercheC PIC 9(1).
+           77 nomAuteur PIC A(30).
+           77 Wfin PIC 9(1).
            01 achat.
                 02 ac_id PIC 9(15).
                 02 ac_dateAchat PIC X(10).
@@ -111,17 +112,24 @@
                02 cl_tel PIC 9(10).
                02 cl_mail PIC A(30).
                02 cl_ptsFidelite PIC 9(3).
-       PROCEDURE DIVISION.
+           
+
+PROCEDURE DIVISION.
+
+        MAIN-PROCEDURE.
+
            OPEN I-O fachats
            IF cr_fachats=35 THEN
                OPEN OUTPUT fachats
            END-IF
            CLOSE fachats
+
            OPEN I-O fventes
-           IF cr_fventes = 35 THEN
+           IF cr_fventes=35 THEN
                OPEN OUTPUT fventes
            END-IF
            CLOSE fventes
+
            OPEN I-O finventaire
            IF cr_finventaire=35 THEN
                OPEN OUTPUT finventaire
@@ -134,10 +142,10 @@
            END-IF
            CLOSE fclients
 
-            DISPLAY "Fichiers créés "
+           PERFORM RECHERCHER_REFERENCE
 
-           PERFORM AJOUT_CLIENT
-           PERFORM SUPPR_CLIENT
-       STOP RUN.
-       COPY 'inventaire.cpy'.
-       COPY "client.cpy".
+STOP RUN.
+   
+           COPY 'inventaire.cpy'.
+                
+
