@@ -79,11 +79,15 @@ WORKING-STORAGE SECTION.
            77 choixSupprClient PIC 9.
            77 testClient PIC 9.
            77 trouve PIC 9(1).
+           77 trouveAchat PIC 9(1).
            77 idRef PIC 9(15).
+           77 idAchat PIC 9(15).
            77 titreRef PIC A(30).
            77 choixRechercheC PIC 9(1).
+           77 choixAffichageStock PIC 9(1).
            77 nomAuteur PIC A(30).
            77 Wfin PIC 9(1).
+           77 nouveauPrix PIC 9(6).      
            01 achat.
                 02 ac_id PIC 9(15).
                 02 ac_dateAchat PIC X(10).
@@ -142,10 +146,10 @@ PROCEDURE DIVISION.
            END-IF
            CLOSE fclients
 
-           PERFORM RECHERCHER_REFERENCE
-
 STOP RUN.
    
            COPY 'inventaire.cpy'.
+           COPY 'achat.cpy'.
+           COPY 'client.cpy'.
                 
 
