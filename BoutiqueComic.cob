@@ -32,9 +32,9 @@
            alternate record key is fc_ptsFidelite WITH DUPLICATES
            file status is cr_fclients.
 
-DATA DIVISION.
+       DATA DIVISION.
 
-FILE SECTION.
+       FILE SECTION.
        FD fachats.
            01 tamp_fachats.
                 02 fa_id PIC 9(15).
@@ -69,7 +69,7 @@ FILE SECTION.
                02 fc_ptsFidelite PIC 9(3).
 
 
-WORKING-STORAGE SECTION.
+       WORKING-STORAGE SECTION.
            77 cr_fachats PIC 9(2).
            77 cr_fventes PIC 9(2).
            77 cr_finventaire PIC 9(2).
@@ -80,6 +80,7 @@ WORKING-STORAGE SECTION.
            77 testClient PIC 9.
            77 trouve PIC 9(1).
            77 trouveAchat PIC 9(1).
+           77 trouveVente PIC 9(1).
            77 idRef PIC 9(15).
            77 idAchat PIC 9(15).
            77 titreRef PIC A(30).
@@ -87,7 +88,7 @@ WORKING-STORAGE SECTION.
            77 choixAffichageStock PIC 9(1).
            77 nomAuteur PIC A(30).
            77 Wfin PIC 9(1).
-           77 nouveauPrix PIC 9(6).      
+           77 nouveauPrix PIC 9(6).
            01 achat.
                 02 ac_id PIC 9(15).
                 02 ac_dateAchat PIC X(10).
@@ -116,9 +117,15 @@ WORKING-STORAGE SECTION.
                02 cl_tel PIC 9(10).
                02 cl_mail PIC A(30).
                02 cl_ptsFidelite PIC 9(3).
-           
+           77 choixMenu PIC 9(2).
+           77 choixMenu2 PIC 9(2).
+           77 utilisateur PIC A(1).
+           77 trouveMenu PIC 9.
+           77 nomComicVente PIC A(30).
+           77 verifClient PIC 9(1).
+           77 idVerifClient PIC 9(15).
 
-PROCEDURE DIVISION.
+       PROCEDURE DIVISION.
 
         MAIN-PROCEDURE.
 
@@ -146,10 +153,13 @@ PROCEDURE DIVISION.
            END-IF
            CLOSE fclients
 
-STOP RUN.
-   
-           COPY 'inventaire.cpy'.
-           COPY 'achat.cpy'.
-           COPY 'client.cpy'.
-                
 
+           PERFORM MENU_PRINC.
+
+       STOP RUN.
+
+       COPY "Menu.cpy".
+       COPY "achat.cpy".
+       COPY "vente.cpy".
+       COPY "inventaire.cpy".
+       COPY "client.cpy".

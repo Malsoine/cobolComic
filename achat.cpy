@@ -1,4 +1,4 @@
-        ENREGISTRER_ACHAT.
+           ENREGISTRER_ACHAT.
                 PERFORM WITH TEST AFTER UNTIL trouveAchat = 0
                         DISPLAY "Entrez le numéro d'id de l'achat"
                         ACCEPT idAchat
@@ -27,7 +27,8 @@
                 MOVE fa_titreComics TO titreRef
                 PERFORM VERIF_TITRE_REF
                 IF trouve = 0
-                THEN DISPLAY "Le comic achete n'existe pas dans l'inventaire, il va donc y être ajoute"
+                THEN DISPLAY "Le comic achete n'existe pas dans
+                l'inventaire, il va donc y être ajoute"
                     PERFORM WITH TEST AFTER UNTIL trouve=0
                         DISPLAY "Entrez un identifiant"
                         ACCEPT idRef
@@ -46,8 +47,8 @@
                     OPEN I-O finventaire
                     WRITE tamp_finventaire
                     END-WRITE
-                    CLOSE finventaire                   
-                ELSE 
+                    CLOSE finventaire
+                ELSE
                     OPEN I-O finventaire
                     MOVE fa_titreComics TO fi_titre
                     READ finventaire KEY IS fi_titre
@@ -56,13 +57,13 @@
                         ADD fa_quantite TO fi_quantite END-ADD
                         REWRITE tamp_finventaire
                              INVALID KEY DISPLAY "Erreur reecriture"
-                             NOT INVALID KEY DISPLAY "Reussite de la reecriture"
+                     NOT INVALID KEY DISPLAY "Reussite de la reecriture"
                         END-REWRITE
                     END-READ
                     CLOSE finventaire
                  END-IF
                  CLOSE fachats.
-                
+
 
         VERIF_ID_ACHAT.
                 MOVE 0 TO trouve
@@ -73,11 +74,3 @@
                 NOT INVALID KEY MOVE 1 TO trouve
                 END-READ
                 CLOSE fachats.
-
-       
-
-
-
-
-
-       
