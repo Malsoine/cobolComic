@@ -1,5 +1,5 @@
            ENREGISTRER_ACHAT.
-                PERFORM WITH TEST AFTER UNTIL trouveAchat = 0
+                PERFORM WITH TEST AFTER UNTIL trouve = 0
                         DISPLAY "Entrez le numéro d'id de l'achat"
                         ACCEPT idAchat
                         PERFORM VERIF_ID_ACHAT
@@ -73,4 +73,22 @@
                 INVALID KEY MOVE 0 TO trouve
                 NOT INVALID KEY MOVE 1 TO trouve
                 END-READ
+                CLOSE fachats.
+
+        AFFICHER_ACHAT. 
+                OPEN INPUT fachats
+                MOVE 1 TO Wfin
+                PERFORM WITH TEST AFTER UNTIL Wfin = 0
+                   READ fachats NEXT
+                   AT END MOVE 0 TO Wfin
+                   NOT AT END 
+                       DISPLAY "Id de l'achat :", fa_id
+                       DISPLAY "Date de l'achat :", fa_dateAchat
+                       DISPLAY "Id de l'achat :", fa_titreComics
+                       DISPLAY "Quantité achetée :", fa_quantite
+                       DISPLAY "Prix unitaire du comics :", fa_prixAchat
+                       DISPLAY "Fournisseur :", fa_nomFournisseur
+                       DISPLAY "----------------------------------"
+                   END-READ
+                END-PERFORM
                 CLOSE fachats.
