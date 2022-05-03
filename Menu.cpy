@@ -109,11 +109,12 @@
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION STOCKS --"
                         DISPLAY "      -Enregistrer un achat (1)"
-                        DISPLAY "      -Rechercher comics (2)"
-                        DISPLAY "      -Consulter inventaire (3)"
-                        DISPLAY "      -Ajouter référence (4)"
-                        DISPLAY "      -Supprimer référence (5)"
-                        DISPLAY "      -Modifier référence (6)"
+                        DISPLAY "      -Afficher les achats (2)"
+                        DISPLAY "      -Rechercher comics (3)"
+                        DISPLAY "      -Consulter inventaire (4)"
+                        DISPLAY "      -Ajouter référence (5)"
+                        DISPLAY "      -Supprimer référence (6)"
+                        DISPLAY "      -Modifier référence (7)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
@@ -130,19 +131,24 @@
                         EVALUATE TRUE
                                 WHEN choixMenu2 = 1
                                        PERFORM ENREGISTRER_ACHAT
+
                                 WHEN choixMenu2 = 2
-                                       PERFORM RECHERCHER_REFERENCE
+                                       PERFORM ENREGISTRER_ACHAT
 
                                 WHEN choixMenu2 = 3
-                                       PERFORM CONSULTER_INVENTAIRE
+                                       PERFORM RECHERCHER_REFERENCE
 
                                 WHEN choixMenu2 = 4
-                                       PERFORM AJOUTER_REFERENCE
+                                       PERFORM CONSULTER_INVENTAIRE
 
                                 WHEN choixMenu2 = 5
+                                       PERFORM AJOUTER_REFERENCE
+
+                                WHEN choixMenu2 = 6
 
                                        PERFORM SUPPRIMER_REFERENCE
-                                WHEN choixMenu2 = 6
+
+                                WHEN choixMenu2 = 7
                                         PERFORM MODIFIER_PRIX_COMIC
                         END-EVALUATE
                 END-PERFORM
