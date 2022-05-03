@@ -97,7 +97,7 @@
                                         PERFORM SUPPR_CLIENT
                                 WHEN choixMenu2 = 4
 
-                                        DISPLAY "4"
+                                       PERFORM MODIFIER_INFO_CLIENT
                         END-EVALUATE
                 END-PERFORM
 

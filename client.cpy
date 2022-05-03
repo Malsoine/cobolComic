@@ -94,7 +94,7 @@
            CONSULTER_PTS_FIDELITE.
            OPEN INPUT fclients
            MOVE 0 TO testNomClient
-           DISPLAY "Entrez le nom : "
+           DISPLAY"Entrez le nom : "
            ACCEPT cl_nom
            DISPLAY "Entrez le prénom : "
            ACCEPT cl_prenom
@@ -111,3 +111,44 @@
                DISPLAY "Points de fidélité : ", fc_ptsFidelite
            END-IF
            close fclients.
+
+
+           MODIFIER_INFO_CLIENT.
+           OPEN INPUT fclients
+           MOVE 0 TO testNomClient
+           MOVE 0 TO fichierFin
+           MOVE 0 TO idClient
+           DISPLAY"Entrez le nom : "
+           ACCEPT cl_nom
+           DISPLAY "Entrez le prénom : "
+           ACCEPT cl_prenom
+           PERFORM WITH TEST AFTER UNTIL fichierFin=1
+               READ fclients NEXT
+               AT END MOVE 1 TO fichierFin
+               NOT AT END
+               IF fc_nom = cl_nom AND fc_prenom = cl_prenom THEN
+                  MOVE fc_id TO idClient
+               END-IF
+               END-READ
+           END-PERFORM
+           close fclients.
+           OPEN I-O fclients
+            MOVE idClient TO fc_id
+            READ fclients KEY IS fc_id
+                INVALID KEY DISPLAY "Ce client n'existe pas"
+                NOT INVALID KEY
+                   DISPLAY "Entrez le nouveau numéro de téléphone"
+                   ACCEPT cl_tel
+                   DISPLAY "Entrez le nouveau mail"
+                   ACCEPT cl_mail
+                   DISPLAY "Entrez le nombre de points de fidélité"
+                   ACCEPT cl_ptsFidelite
+                   MOVE cl_tel TO fc_tel
+                   MOVE cl_mail TO fc_mail
+                   MOVE cl_ptsFidelite TO fc_ptsFidelite
+                   REWRITE tamp_fclient
+                     INVALID KEY DISPLAY "Erreur de réécriture"
+                     NOT INVALID KEY DISPLAY "La modification est faite"
+                   END-REWRITE
+                END-READ
+            CLOSE fclients.

@@ -75,6 +75,7 @@
            77 cr_finventaire PIC 9(2).
            77 cr_fclients PIC 9(2).
            77 testNomClient PIC 9.
+           77 idClient PIC 9(15).
            77 fichierFin PIC 9.
            77 choixSupprClient PIC 9.
            77 testClient PIC 9.
