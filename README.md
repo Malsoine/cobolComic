@@ -1,5 +1,7 @@
 # Dunkirk_creation_comics
 
+Ce projet consiste en la gestion d'une Boutique de Comics au niveau des achats de comics auprès de fournisseur, au niveau des stocks du magasin, au niveau des ventes/commandes effectuées par les clients et au niveau de la gestion des clients (points de fidèlités).
+
 ## Normalisation du code
 
 ### Nommage des variables
