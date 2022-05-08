@@ -152,3 +152,24 @@
                    END-REWRITE
                 END-READ
             CLOSE fclients.
+
+           STATISTIQUES_CLIENT.
+           OPEN INPUT fclients
+           MOVE 0 to testClient
+           MOVE 0 TO fichierFin
+           MOVE 0 TO idClient
+           DISPLAY "Que voulez-vous faire ?"
+           DISPLAY "1 : Afficher le nombre de client"
+           ACCEPT choixSupprClient
+           EVALUATE choixSupprClient
+           WHEN 1
+           PERFORM WITH TEST AFTER UNTIL fichierFin=1
+               READ fclients NEXT
+               AT END MOVE 1 TO fichierFin
+               NOT AT END
+               ADD 1 TO idClient
+               END-READ
+           END-PERFORM
+           DISPLAY "Nombre de client : ", idClient
+           END-EVALUATE
+           CLOSE fclients.
