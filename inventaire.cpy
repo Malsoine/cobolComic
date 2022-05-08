@@ -5,8 +5,8 @@
                 PERFORM WITH TEST AFTER UNTIL trouve=0
                         DISPLAY "Entrez un identifiant"
                         ACCEPT idRef
-                        *>On vérifie que l'identifiant rentré par 
-                        *>l'utilisateur n'existe pas déjà dans 
+                        *>On vérifie que l'identifiant rentré par
+                        *>l'utilisateur n'existe pas déjà dans
                         *>le fichier
                         PERFORM VERIF_ID_REF
                 END-PERFORM
@@ -17,12 +17,12 @@
                         DISPLAY "Entrez un titre"
                         ACCEPT titreRef
                         *>On vérifie que le titre rentré par
-                        *>l'utilisateur n'existe pas déjà 
+                        *>l'utilisateur n'existe pas déjà
                         *>dans le fichier
                         PERFORM VERIF_TITRE_REF
                 END-PERFORM
 
-                *>On demande à l'utilisateur de rentrer le 
+                *>On demande à l'utilisateur de rentrer le
                 *>nom de l'auteur (non vide)
                 PERFORM WITH TEST AFTER UNTIL NOT fi_auteur=" "
                         DISPLAY "Entrez un auteur"
@@ -36,7 +36,7 @@
                         ACCEPT fi_quantite
                 END-PERFORM
 
-                *>On demande à l'utilisateur de rentrer le prix 
+                *>On demande à l'utilisateur de rentrer le prix
                 *>unitaire du comics (ni nul ni négatif)
                 PERFORM WITH TEST AFTER UNTIL fi_prix>0
                         DISPLAY "Entrez le prix de l'article"
@@ -63,7 +63,7 @@
                 END-READ
                 CLOSE finventaire.
 
-        *>Cette méthode vérifie que le titre donné est déjà attribué ou 
+        *>Cette méthode vérifie que le titre donné est déjà attribué ou
         *>non à une référence dans l'inventaire
         VERIF_TITRE_REF.
                 MOVE 0 TO trouve
@@ -76,7 +76,7 @@
                 NOT INVALID KEY MOVE 1 TO trouve
                 END-READ
                 CLOSE finventaire.
-        
+
         *>Cette méthode supprime la référence du comic dont le titre
         *>est demandé à l'utilisateur dans le fichier
         SUPPRIMER_REFERENCE.
@@ -172,20 +172,20 @@
                    *>Demande à l'utilisateur de rentrer le nouveau prix
                    DISPLAY "Entrez le nouveau prix de ce comic"
                    ACCEPT nouveauPrix
-                   *>Modification de la variable concernant le prix dans 
+                   *>Modification de la variable concernant le prix dans
                    *>le tampon
                    MOVE nouveauPrix TO fi_prix
-                   *Réécriture du tampon
+                   *>Réécriture du tampon
                    REWRITE tamp_finventaire
                      INVALID KEY DISPLAY "Erreur de réecriture"
                      NOT INVALID KEY DISPLAY "La modification est faite"
                    END-REWRITE
                 END-READ
             CLOSE finventaire.
-        
+
         *>Cette méthode affiche les comics présents dans l'inventaire
-        *>selon 2 options possibles (ceux ayant des exemplaires en stock 
-        *>ou ceux qui sont commandables c'est-à-dire qu'ils n'ont pas 
+        *>selon 2 options possibles (ceux ayant des exemplaires en stock
+        *>ou ceux qui sont commandables c'est-à-dire qu'ils n'ont pas
         *>d'exemplaires en stock)
         CONSULTER_INVENTAIRE.
        DISPLAY "Afficher les comics en stock (1)"
@@ -229,8 +229,8 @@
                             END-IF
                         END-READ
                    END-PERFORM
-                *>L'utilisateur a rentré un autre nombre que 1 ou 2, 
-                *>l'entrée est donc invalide 
+                *>L'utilisateur a rentré un autre nombre que 1 ou 2,
+                *>l'entrée est donc invalide
                 WHEN OTHER
                    DISPLAY "Choix invalide"
                 END-EVALUATE
