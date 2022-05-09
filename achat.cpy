@@ -5,7 +5,7 @@
                 *>Demande à l'utilisateur de rentrer l'id de l'achat
                 *>à enregistrer
                 PERFORM WITH TEST AFTER UNTIL trouve = 0
-                        DISPLAY "Entrez le numéro d'id de l'achat"
+                        DISPLAY "Entrez le numero d'id de l'achat"
                         ACCEPT idAchat
                         *>ON vérifie que cet id n'est pas déjà utilisé
                         *>pour un autre achat au sein du fichier
@@ -18,12 +18,12 @@
 
                 *>Demande à l'utilisateur de rentrer le titre du comic
                 *>acheté
-                DISPLAY "Entrez le titre du comic acheté"
+                DISPLAY "Entrez le titre du comic achete"
                 ACCEPT fa_titreComics
 
                 *>Demande à l'utilisateur de rentrer la quantité achétée
                 PERFORM WITH TEST AFTER UNTIL fa_quantite > 0
-                        DISPLAY "Entrez la quantité achetée"
+                        DISPLAY "Entrez la quantite achetee"
                         ACCEPT fa_quantite
                 END-PERFORM
                 
@@ -49,7 +49,6 @@
                 *>On vérifie que le titre du comic acheté existe déjà
                 *>ou non dans le fichier inventaire
                 PERFORM VERIF_TITRE_REF
-
                 *>Le comic n'existe pas alors on crée une nouvelle 
                 *>référence dans le fichier inventaire
                 IF trouve = 0
@@ -125,14 +124,34 @@
         *>dans le fichier dachat
         VERIF_ID_ACHAT.
                 MOVE 0 TO trouve
+                MOVE 1 TO Wfin
                 OPEN INPUT fachats
                 MOVE idAchat TO fa_id
                 READ fachats
-                *>L'id d'achat existe 
+                *>L'id d'achat n'est attribué à aucun achat 
                 INVALID KEY MOVE 0 TO trouve
-                *>L'id rentré n'est attribué à aucun achat
+                *>L'id rentré existe déjà
                 NOT INVALID KEY MOVE 1 TO trouve
                 END-READ
+                CLOSE fachats
+                *>On ferme le fichier puis on le réouvre afin que le
+                *>pointeur qui parcourt le fichier repart depuis le 
+                *>début de celui-ci
+                OPEN INPUT fachats
+                *>On affiche les identifiants déjà attribués
+                IF trouve = 1
+                THEN 
+                     DISPLAY "Liste des identifiants deja attribues"
+                     PERFORM WITH TEST AFTER UNTIL Wfin =0
+                        READ fachats NEXT
+                        AT END 
+                         DISPLAY "L'id entre est déjà attribue"
+                         MOVE 0 TO Wfin
+                        NOT AT END DISPLAY fa_id
+                          DISPLAY "----------------"
+                        END-READ
+                     END-PERFORM
+                END-IF
                 CLOSE fachats.
 
         *>Cette méthode affiche l'ensemble des achats présents dans le
@@ -149,8 +168,8 @@
                        DISPLAY "Id de l'achat :", fa_id
                        DISPLAY "Date de l'achat :", fa_dateAchat
                        DISPLAY "Id de l'achat :", fa_titreComics
-                       DISPLAY "Quantité achetée :", fa_quantite
-                       DISPLAY "Prix unitaire du comics :", fa_prixAchat
+                       DISPLAY "Quantite achetée :", fa_quantite
+                       DISPLAY "Prix unitaire du comic :", fa_prixAchat
                        DISPLAY "Fournisseur :", fa_nomFournisseur
                        DISPLAY "----------------------------------"
                    END-READ
