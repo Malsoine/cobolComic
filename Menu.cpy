@@ -1,12 +1,11 @@
-
-        MENU_PRINC.
+       MENU_PRINC.
 
                 MOVE 0 TO trouveMenu
 
                 PERFORM WITH TEST AFTER UNTIL trouveMenu =1
                         DISPLAY "--- Choix de l'utilisateur : ---"
-                        DISPLAY "0 pour un employÃ©"
-                        DISPLAY "1 pour le gÃ©rant"
+                        DISPLAY "0 pour un employé"
+                        DISPLAY "1 pour le gérant"
                         DISPLAY " "
                         DISPLAY "2 Installation du jeu d'essai"
                         ACCEPT utilisateur
@@ -73,14 +72,15 @@
                          DISPLAY "      -Ajouter client (2)"
                          DISPLAY "      -Supprimer client (3)"
                          DISPLAY "      -Modifier client (4)"
+                         DISPLAY "      -Afficher liste clients (5)"
                          DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
 
 
-                        IF choixMenu2 > 4 THEN
+                        IF choixMenu2 > 5 THEN
 
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 5
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
@@ -98,6 +98,9 @@
                                 WHEN choixMenu2 = 4
 
                                        PERFORM MODIFIER_INFO_CLIENT
+                                WHEN choixMenu2 = 5
+                                       PERFORM AFFICHER_LISTE_CLIENTS
+
                         END-EVALUATE
                 END-PERFORM
 
@@ -112,9 +115,9 @@
                         DISPLAY "      -Afficher les achats (2)"
                         DISPLAY "      -Rechercher comics (3)"
                         DISPLAY "      -Consulter inventaire (4)"
-                        DISPLAY "      -Ajouter rÃ©fÃ©rence (5)"
-                        DISPLAY "      -Supprimer rÃ©fÃ©rence (6)"
-                        DISPLAY "      -Modifier rÃ©fÃ©rence (7)"
+                        DISPLAY "      -Ajouter référence (5)"
+                        DISPLAY "      -Supprimer référence (6)"
+                        DISPLAY "      -Modifier référence (7)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
@@ -243,18 +246,19 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                          DISPLAY "   -- GESTION CLIENTS --"
-                         DISPLAY "      -Consulter clients (1)"
+                         DISPLAY "      -Consulter client (1)"
                          DISPLAY "      -Ajouter client (2)"
                          DISPLAY "      -Supprimer client (3)"
                          DISPLAY "      -Modifier client (4)"
+                         DISPLAY "      -Afficher liste client (5)"
                          DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
 
 
-                        IF choixMenu2 > 4 THEN
+                        IF choixMenu2 > 5 THEN
 
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 5
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
@@ -272,7 +276,9 @@
                                         PERFORM SUPPR_CLIENT
                                 WHEN choixMenu2 = 4
 
-                                        DISPLAY "4"
+                                        PERFORM MODIFIER_INFO_CLIENT
+                                WHEN choixMenu2 = 5
+                                        PERFORM AFFICHER_LISTE_CLIENTS
                         END-EVALUATE
                 END-PERFORM
 
@@ -354,5 +360,6 @@
 
         AFFICHE_STATS_EMPLOYE.
                DISPLAY "STATISTIQUES"
+
 
                PERFORM MENU_PRINC.
