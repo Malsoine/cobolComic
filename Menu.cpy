@@ -68,13 +68,13 @@
 
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
-                         DISPLAY "   -- GESTION CLIENTS --"
-                         DISPLAY "      -Consulter clients (1)"
-                         DISPLAY "      -Ajouter client (2)"
-                         DISPLAY "      -Supprimer client (3)"
-                         DISPLAY "      -Modifier client (4)"
-                         DISPLAY "      -Afficher liste clients (5)"
-                         DISPLAY "      -RETOUR (0)"
+                    DISPLAY "   -- GESTION CLIENTS --"
+              DISPLAY "      -Consulter les points d'un clients (1)"
+                    DISPLAY "      -Ajouter un client (2)"
+                    DISPLAY "      -Supprimer un client (3)"
+                    DISPLAY "      -Modifier les infos d'un client (4)"
+                    DISPLAY "      -Afficher la liste des clients (5)"
+                    DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
 
@@ -113,8 +113,8 @@
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION STOCKS --"
                         DISPLAY "      -Enregistrer un achat (1)"
-                        DISPLAY "      -Afficher les achats (2)"
-                        DISPLAY "      -Rechercher comics (3)"
+                     DISPLAY "      -Afficher la liste des achats (2)"
+                        DISPLAY "      -Rechercher comic (3)"
                         DISPLAY "      -Consulter les stocks (4)"
                         DISPLAY "      -Ajouter un comic en stock(5)"
                         DISPLAY "      -Supprimer un comic (6)"
@@ -137,7 +137,7 @@
                                        PERFORM ENREGISTRER_ACHAT
 
                                 WHEN choixMenu2 = 2
-                                       PERFORM ENREGISTRER_ACHAT
+                                       PERFORM AFFICHER_ACHAT
 
                                 WHEN choixMenu2 = 3
                                        PERFORM RECHERCHER_REFERENCE
@@ -167,7 +167,7 @@
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION VENTE --"
                 DISPLAY "      -Enregistrer une vente/commande (1)"
-           DISPLAY "      -Mise Ã  jour statut de la commande (2)"
+           DISPLAY "      -Mise à jour statut de la commande (2)"
                         DISPLAY "      -Historique commandes (3)"
                         DISPLAY "      -RETOUR (0)"
 
@@ -247,13 +247,12 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                          DISPLAY "   -- GESTION CLIENTS --"
-                         DISPLAY "      -Consulter clients (1)"
-                         DISPLAY "      -Ajouter client (2)"
-                         DISPLAY "      -Supprimer client (3)"
-                         DISPLAY "      -Modifier client (4)"
-                         DISPLAY "      -Afficher liste client (5)"
-                         DISPLAY "      -RETOUR (0)"
-
+              DISPLAY "      -Consulter les points d'un clients (1)"
+                    DISPLAY "      -Ajouter un client (2)"
+                    DISPLAY "      -Supprimer un client (3)"
+                    DISPLAY "      -Modifier les infos d'un client (4)"
+                    DISPLAY "      -Afficher la liste des clients (5)"
+                    DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
 
 
@@ -289,8 +288,8 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION STOCKS --"
-                        DISPLAY "      -Rechercher comics (1)"
-                        DISPLAY "      -Consulter inventaire (2)"
+                        DISPLAY "      -Rechercher un comic (1)"
+                        DISPLAY "      -Consulter l'inventaire (2)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
@@ -324,7 +323,7 @@
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION VENTE --"
                     DISPLAY "      -Enregistrer une vente/commande (1)"
-                DISPLAY "      -Mise Ã  jour statut de la commande (2)"
+                DISPLAY "      -Mise à jour statut de la commande (2)"
                         DISPLAY "      -Historique commandes (3)"
                         DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
