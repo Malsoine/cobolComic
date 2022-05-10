@@ -38,7 +38,10 @@
        FD fachats.
            01 tamp_fachats.
                 02 fa_id PIC 9(15).
-                02 fa_dateAchat PIC X(10).
+                02 fa_dateAchat.
+                        03 dateYear PIC 9(4).
+                        03 dateMonth PIC 9(2).
+                        03 dateDay PIC 9(2).
                 02 fa_titreComics PIC A(30).
                 02 fa_quantite PIC 9(4).
                 02 fa_prixAchat PIC 9(6)v9(2).
@@ -92,7 +95,10 @@
            77 nouveauPrix PIC 9(6).
            01 achat.
                 02 ac_id PIC 9(15).
-                02 ac_dateAchat PIC X(10).
+                02 ac_dateAchat.
+                        03 dateYear PIC 9(4).
+                        03 dateMonth PIC 9(2).
+                        03 dateDay PIC 9(2).
                 02 ac_titreComics PIC A(30).
                 02 ac_quantite PIC 9(4).
                 02 ac_prixAchat PIC 9(6)v9(2).
@@ -125,6 +131,13 @@
            77 nomComicVente PIC A(30).
            77 verifClient PIC 9(1).
            77 idVerifClient PIC 9(15).
+           77 VerifVente PIC 9(1).
+           77 idVente PIC 9(15).
+           77 idCommande PIC 9(15).
+           77 VerifStatut PIC 9(1).
+           77 EtatStatut PIC 9(15).
+           77 LatentPoint PIC 9(3).
+
 
        PROCEDURE DIVISION.
 

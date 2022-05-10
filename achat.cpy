@@ -12,9 +12,8 @@
                         PERFORM VERIF_ID_ACHAT
                 END-PERFORM
 
-                *>Demande à l'utilisateur de rentrer la date d'achat
-                DISPLAY "Entrez la date d'achat"
-                ACCEPT fa_dateAchat
+                *>Rentre la date du système pour la date d'achat
+                MOVE FUNCTION CURRENT-DATE TO ac_dateAchat               
 
                 *>Demande à l'utilisateur de rentrer le titre du comic
                 *>acheté
