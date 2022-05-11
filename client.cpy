@@ -38,6 +38,11 @@
            CLOSE fclients
            IF testClient = 1 OR testNomClient = 1 THEN
                DISPLAY "Erreur, le client est deja dans le fichier"
+               DISPLAY "  "
+               PERFORM AFFICHER_LISTE_CLIENTS
+               DISPLAY "  "
+               DISPLAY " - Resaisie d'un client - "
+               PERFORM AJOUT_CLIENT
            ELSE IF testClient = 0 AND testNomClient = 0 THEN
                OPEN I-O fclients
                MOVE client TO tamp_fclient
@@ -183,6 +188,7 @@
                DISPLAY "-------"
                DISPLAY "Nom : ",fc_nom
                DISPLAY "Prenom : ",fc_prenom
+               DISPLAY "Identifiant : ", fc_id
                END-READ
            END-PERFORM
            CLOSE fclients.
@@ -191,11 +197,17 @@
 
            STATISTIQUES_CLIENT.
            OPEN INPUT fclients
+           MOVE 0 TO choixSupprClient
            MOVE 0 to testClient
            MOVE 0 TO fichierFin
-           MOVE 0 TO idClient
+           MOVE 0 TO nbClient
+           MOVE 0 TO ptsFidelite
            DISPLAY "Que voulez-vous faire ?"
-           DISPLAY "      -Afficher le nombre de client (1)"
+           DISPLAY "   -Afficher le nombre de client (1)"
+           DISPLAY "   -Afficher les clients au dessus d'un seuil de"
+           DISPLAY "   points de fidélité (2)"
+           DISPLAY "   -Afficher le client ayant le plus de points (3)"
+           DISPLAY "   -RETOUR (0)"
            ACCEPT choixSupprClient
            EVALUATE choixSupprClient
            WHEN 1
@@ -203,9 +215,53 @@
                READ fclients NEXT
                AT END MOVE 1 TO fichierFin
                NOT AT END
-               ADD 1 TO idClient
+               ADD 1 TO nbClient
                END-READ
            END-PERFORM
-           DISPLAY "Nombre de client : ", idClient
+           DISPLAY "Nombre de client : ", nbClient
+
+           WHEN 2
+           MOVE 0 TO nbClient
+           DISPLAY"A partir de quel seuil voulez-vous voir les clients?"
+           ACCEPT ptsFidelite
+           DISPLAY " "
+           DISPLAY "-------"
+           DISPLAY"Clients ayant plus de ", ptsFidelite
+           DISPLAY "points de fidelite : "
+           PERFORM WITH TEST AFTER UNTIL fichierFin=1
+               READ fclients NEXT
+               AT END MOVE 1 TO fichierFin
+               NOT AT END
+               IF ptsFidelite <= fc_ptsFidelite THEN
+                   ADD 1 TO nbClient
+                   DISPLAY "-------"
+                   DISPLAY "Nom : ",fc_nom
+                   DISPLAY "Prenom : ",fc_prenom
+                END-IF
+               END-READ
+           END-PERFORM
+           DISPLAY "-------"
+           DISPLAY "Il y a au total ", nbClient, " client(s)"
+           DISPLAY "au dessus de ", ptsFidelite, " points"
+           DISPLAY " "
+
+           WHEN 3
+           MOVE 0 TO ptsFidelite
+           PERFORM WITH TEST AFTER UNTIL fichierFin=1
+               READ fclients NEXT
+               AT END MOVE 1 TO fichierFin
+               NOT AT END
+               IF ptsFidelite <= fc_ptsFidelite THEN
+                  MOVE fc_ptsFidelite TO ptsFidelite
+                  MOVE fc_nom TO cl_nom
+                  MOVE fc_prenom TO cl_prenom
+                END-IF
+               END-READ
+           END-PERFORM
+           DISPLAY " "
+           DISPLAY "Le client ayant le plus de point est : "
+           DISPLAY "Nom : ",fc_nom
+           DISPLAY "Prenom : ",fc_prenom
+           DISPLAY "Avec un total de ", ptsFidelite, " points"
            END-EVALUATE
            CLOSE fclients.

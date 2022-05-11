@@ -79,7 +79,9 @@
            77 cr_fclients PIC 9(2).
            77 testNomClient PIC 9.
            77 idClient PIC 9(15).
+           77 ptsFidelite PIC 9(3).
            77 fichierFin PIC 9.
+           77 nbClient PIC 9(3).
            77 choixSupprClient PIC 9.
            77 testClient PIC 9.
            77 trouve PIC 9(1).

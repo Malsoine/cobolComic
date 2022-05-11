@@ -202,8 +202,27 @@
 
 
         AFFICHE_STATS_GERANT.
-               DISPLAY "STATISTIQUES"
 
+           MOVE 0 TO choixMenu2
+                PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
+                        DISPLAY "   -- STATISTIQUES --"
+                    DISPLAY "      -Statistiques Client (1)"
+                        DISPLAY "      -RETOUR (0)"
+                        ACCEPT choixMenu2
+                        IF choixMenu2 > 3 THEN
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
+                                DISPLAY "Ressaisissez !"
+                                ACCEPT choixMenu2
+                        END-PERFORM
+                        END-IF
+                        EVALUATE TRUE
+                                WHEN choixMenu2 = 1
+                                        PERFORM STATISTIQUES_CLIENT
+                        END-EVALUATE
+                END-PERFORM
+
+                DISPLAY " "
+                PERFORM MENU_GERANT.
                PERFORM MENU_PRINC.
 
 
@@ -349,6 +368,24 @@
 
 
         AFFICHE_STATS_EMPLOYE.
-               DISPLAY "STATISTIQUES"
+                MOVE 0 TO choixMenu2
+                PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
+                        DISPLAY "   -- STATISTIQUES --"
+                    DISPLAY "      -Statistiques Client (1)"
+                        DISPLAY "      -RETOUR (0)"
+                        ACCEPT choixMenu2
+                        IF choixMenu2 > 3 THEN
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
+                                DISPLAY "Ressaisissez !"
+                                ACCEPT choixMenu2
+                        END-PERFORM
+                        END-IF
+                        EVALUATE TRUE
+                                WHEN choixMenu2 = 1
+                                        PERFORM STATISTIQUES_CLIENT
+                        END-EVALUATE
+                END-PERFORM
 
+                DISPLAY " "
+                PERFORM MENU_EMPLOYE.
                PERFORM MENU_PRINC.
