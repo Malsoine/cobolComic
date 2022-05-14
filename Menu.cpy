@@ -169,13 +169,14 @@
                 DISPLAY "      -Enregistrer une vente/commande (1)"
            DISPLAY "      -Mise à jour statut de la commande (2)"
                         DISPLAY "      -Historique commandes (3)"
+                       DISPLAY "      -Afficher la liste des ventes (4)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
 
-                        IF choixMenu2 > 4 THEN
+                        IF choixMenu2 > 5 THEN
 
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 5
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
@@ -193,7 +194,7 @@
                                         DISPLAY "3"
                                 WHEN choixMenu2 = 4
 
-                                        DISPLAY "4"
+                                        PERFORM AFFICHER_VENTE
                         END-EVALUATE
                 END-PERFORM
 
@@ -344,10 +345,11 @@
                     DISPLAY "      -Enregistrer une vente/commande (1)"
                 DISPLAY "      -Mise à jour statut de la commande (2)"
                         DISPLAY "      -Historique commandes (3)"
+                       DISPLAY "      -Afficher la liste des ventes (4)"
                         DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
-                        IF choixMenu2 > 3 THEN
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
+                        IF choixMenu2 > 5 THEN
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 5
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
@@ -360,6 +362,8 @@
                                         DISPLAY "2"
                                 WHEN choixMenu2 = 3
                                         DISPLAY "3"
+                                WHEN choixMenu2 = 4
+                                        PERFORM AFFICHER_VENTE
                         END-EVALUATE
                 END-PERFORM
 

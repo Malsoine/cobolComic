@@ -17,31 +17,43 @@
 
            MOVE FUNCTION CURRENT-DATE TO ve_dateVente
 
+           *>Récupération du prix de vente du comic dans le fichier
+           *>inventaire          
+           PERFORM RECUPERER_PRIX_DE_VENTE
 
-
-           PERFORM WITH TEST AFTER UNTIL ve_prixvente > 0
-               DISPLAY "Entrez le prix de vente"
-               ACCEPT ve_prixVente
-           END-PERFORM
-
+           *>Vérification du nombre d'exemplaire du comic en stock
             PERFORM VERIF_STOCKS
-            IF ve_statut = 0 THEN
-                MOVE idVerifClient TO ve_client
-                MOVE idVente TO ve_id
-                MOVE titreRef TO ve_titreComics
+           *>IL y a des exemplaires en stock
+            IF fv_statut = 0 THEN
+                MOVE idVerifClient TO fv_client
+                MOVE idVente TO fv_id
+                MOVE titreRef TO fv_titreComics
 
                 PERFORM MAJ_INVENTAIRE
                 PERFORM AJOUTER_PTS_FIDELITE
 
                 OPEN I-O fventes
-                MOVE vente TO tamp_fvente
                 WRITE tamp_fvente
                 END-WRITE
-                DISPLAY "Ajout effectue"
+                DISPLAY "Vente enregistree"
                 CLOSE fventes
+            *>Il n'y a pas d'exemplaire en stock on effectue donc une
+            *>commande
             ELSE
-                DISPLAY "Faire une commande et un achat "
-                DISPLAY "Comic pas en stock"
+                DISPLAY "Le comic voulu n'a pas d'exemplaire en stock"
+                DISPLAY "On enregistre donc une commande"
+                MOVE idVerifClient TO fv_client
+                MOVE idVente TO fv_id
+                MOVE titreRef TO fv_titreComics
+
+                PERFORM MAJ_INVENTAIRE
+                PERFORM AJOUTER_PTS_FIDELITE
+
+                OPEN I-O fventes
+                WRITE tamp_fvente
+                END-WRITE
+                DISPLAY "Commande enregistree"
+                CLOSE fventes
             END-IF.
 
            VERIF_NOM_REF.
@@ -57,13 +69,14 @@
 
                OPEN INPUT fclients
                 MOVE 0 TO testNomClient
+                MOVE 1 TO fichierFin
                    DISPLAY"Entrez le nom du client : "
                    ACCEPT cl_nom
                    DISPLAY "Entrez le prenom du client : "
                    ACCEPT cl_prenom
-                   PERFORM WITH TEST AFTER UNTIL fichierFin=1
+                   PERFORM WITH TEST AFTER UNTIL fichierFin=0
                        READ fclients NEXT
-                       AT END MOVE 1 TO fichierFin
+                       AT END MOVE 0 TO fichierFin
                        NOT AT END
                        IF fc_nom = cl_nom AND fc_prenom = cl_prenom THEN
                           MOVE 1 TO testNomClient
@@ -79,17 +92,40 @@
 
            VERIF_ID_VENTE.
                MOVE idVente TO fv_id
+               MOVE 1 TO Wfin
                OPEN INPUT fventes
                READ fventes
                KEY IS fv_id
                INVALID KEY MOVE 0 TO VerifVente
                NOT INVALID KEY MOVE 1 TO VerifVente
-               DISPLAY "Cle dejà existante"
                END-READ
-               CLOSE fventes.
+               CLOSE fventes
+               IF VerifVente = 1 THEN
+                  OPEN INPUT fventes
+                  DISPLAY "Liste des id de ventes deja attribues"
+                  PERFORM WITH TEST AFTER UNTIL Wfin =0
+                        READ fventes NEXT
+                        AT END 
+                         MOVE 0 TO Wfin
+                        NOT AT END DISPLAY fv_id
+                          DISPLAY "----------------"
+                        END-READ
+                     END-PERFORM
+                     CLOSE fventes
+                END-IF.
+                
+
+           RECUPERER_PRIX_DE_VENTE.
+                OPEN INPUT finventaire
+                MOVE titreRef TO fi_titre
+                READ finventaire
+                INVALID KEY DISPLAY "erreur comic non trouve"
+                NOT INVALID KEY
+                    MOVE fi_prix TO fv_prixVente
+                CLOSE finventaire.
 
            VERIF_STOCKS.
-           MOVE 0 TO ve_statut
+           MOVE 0 TO fv_statut
            OPEN INPUT finventaire
                MOVE titreRef TO fi_titre
                READ finventaire
@@ -97,57 +133,42 @@
                NOT INVALID KEY
                IF fi_quantite > 0
                THEN
-                   MOVE 0 TO ve_statut
+                   MOVE 0 TO fv_statut
                ELSE
-                   MOVE 1 TO ve_statut
+                   MOVE 1 TO fv_statut
                END-IF
                 END-READ
-
            CLOSE finventaire.
 
 
            AJOUTER_PTS_FIDELITE.
            OPEN I-O fclients
-           DISPLAY cr_fclients
-           MOVE idVerifClient TO fc_id
-           READ fclients
-           KEY IS fc_id
-           INVALID KEY
-           DISPLAY "Erreur client non trouve"
-           NOT INVALID KEY
-                   MOVE fc_ptsFidelite TO LatentPoint
-                   ADD 1 TO LatentPoint END-ADD
-                   MOVE LatentPoint TO fc_ptsFidelite
-                   REWRITE tamp_fclient
-                   END-REWRITE
-                   DISPLAY cr_fclients
+           MOVE fv_client TO fc_id
+           READ fclients KEY IS fc_id
+                INVALID KEY
+                        DISPLAY "Erreur client non trouve"
+                NOT INVALID KEY
+                        *>MOVE fc_ptsFidelite TO LatentPoint
+                        ADD 1 TO fc_ptsFidelite END-ADD
+                        *>MOVE LatentPoint TO fc_ptsFidelite
+                        REWRITE tamp_fclient
+                    INVALID KEY DISPLAY "Erreur ajout pts de fidelite"
+           NOT INVALID KEY DISPLAY "Reussite ajout pts de fidelite"
+                        END-REWRITE
            END-READ
-
-           CLOSE fclients
-           OPEN INPUT fclients
-           READ fclients
-           KEY IS fc_id
-           INVALID KEY DISPLAY "Erreur client non trouve"
-           NOT INVALID KEY
-                IF LatentPoint=fc_ptsFidelite THEN
-                DISPLAY "Reussite de la reecriture pts fidelites"
-                ELSE
-                DISPLAY "Erreur reecriture pts fidelites"
-                END-IF
-           END-READ
-           CLOSE fclients.
+           CLOSE fclients.      
 
            MAJ_INVENTAIRE.
            OPEN I-O finventaire
            MOVE titreRef TO fi_titre
            READ finventaire KEY IS fi_titre
-           INVALID KEY DISPLAY "Erreur comic non trouve"
-           NOT INVALID KEY
-           SUBTRACT 1 FROM fi_quantite END-SUBTRACT
-           REWRITE tamp_finventaire
-           INVALID KEY DISPLAY "Erreur reecriture inventaire"
-           NOT INVALID KEY DISPLAY "Reussite de la reecriture stocks"
-
+                INVALID KEY DISPLAY "Erreur : comic non trouve"
+                NOT INVALID KEY
+                        SUBTRACT 1 FROM fi_quantite END-SUBTRACT
+                REWRITE tamp_finventaire
+           INVALID KEY DISPLAY "Erreur mise a jour du stock"
+           NOT INVALID KEY DISPLAY "Reussite de la mise a jour du stock"
+                        
            END-REWRITE
            END-READ
            CLOSE finventaire.
@@ -162,8 +183,6 @@
            NOT INVALID KEY MOVE 1 TO VerifVente
            END-READ
            CLOSE fventes.
-
-
 
 
            MAJ_STATUT_COMMANDE.
@@ -194,7 +213,8 @@
                        END-PERFORM
                    MOVE EtatStatut TO fv_statut
                    REWRITE tamp_fvente
-               INVALID KEY DISPLAY "Erreur de reecriture commande"
+               INVALID KEY 
+            DISPLAY "Erreur de la modification du status de la commande"
                  NOT INVALID KEY DISPLAY "La modification est faite"
 
                    MOVE 1 TO VerifVente
@@ -203,3 +223,24 @@
                    END-READ
                    CLOSE fventes
            END-PERFORM.
+
+           *>Affiche la liste des ventes
+           AFFICHER_VENTE.
+                OPEN INPUT fventes
+                MOVE 1 TO Wfin
+                *>Lecture séquentielle du fichier jusqu'à sa fin
+                PERFORM WITH TEST AFTER UNTIL Wfin = 0
+                   READ fventes NEXT
+                   AT END MOVE 0 TO Wfin
+                   NOT AT END 
+                       *>Affichage des informations liées à l'achat
+                       DISPLAY "Id de la vente :", fv_id
+                       DISPLAY "Statut de la vente :", fv_statut
+                       DISPLAY "Date de la vente :", fv_dateVente
+                       DISPLAY "Comic vendu :", fv_titreComics
+                       DISPLAY "Prix de la vente :", fv_prixVente
+                       DISPLAY "Id du client :", fv_client
+                       DISPLAY "----------------------------------"
+                   END-READ
+                END-PERFORM
+                CLOSE fachats.

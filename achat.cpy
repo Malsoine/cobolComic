@@ -136,22 +136,21 @@
                 *>On ferme le fichier puis on le réouvre afin que le
                 *>pointeur qui parcourt le fichier repart depuis le 
                 *>début de celui-ci
-                OPEN INPUT fachats
                 *>On affiche les identifiants déjà attribués
                 IF trouve = 1
                 THEN 
+                     OPEN INPUT fachats
                      DISPLAY "Liste des identifiants deja attribues"
                      PERFORM WITH TEST AFTER UNTIL Wfin =0
                         READ fachats NEXT
                         AT END 
-                         DISPLAY "L'id entre est déjà attribue"
                          MOVE 0 TO Wfin
                         NOT AT END DISPLAY fa_id
                           DISPLAY "----------------"
                         END-READ
                      END-PERFORM
-                END-IF
-                CLOSE fachats.
+                     CLOSE fachats
+                END-IF.
 
         *>Cette méthode affiche l'ensemble des achats présents dans le
         *>fichier achat
@@ -166,9 +165,10 @@
                        *>Affichage des informations liées à l'achat
                        DISPLAY "Id de l'achat :", fa_id
                        DISPLAY "Date de l'achat :", fa_dateAchat
-                       DISPLAY "Id de l'achat :", fa_titreComics
-                       DISPLAY "Quantite achetée :", fa_quantite
-                       DISPLAY "Prix unitaire du comic :", fa_prixAchat
+                       DISPLAY "comic achete :", fa_titreComics
+                       DISPLAY "Quantite achetee :", fa_quantite
+                       DISPLAY "Prix unitaire d'achat du comic :", 
+                       fa_prixAchat
                        DISPLAY "Fournisseur :", fa_nomFournisseur
                        DISPLAY "----------------------------------"
                    END-READ
