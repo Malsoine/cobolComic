@@ -15,8 +15,8 @@
 
            PERFORM VERIF_CLIENT_VENTE
 
-           DISPLAY "Entrez la date de vente"
-           ACCEPT ve_dateVente
+           MOVE FUNCTION CURRENT-DATE TO ve_dateVente
+
 
 
            PERFORM WITH TEST AFTER UNTIL ve_prixvente > 0
