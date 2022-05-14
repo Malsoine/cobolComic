@@ -51,7 +51,10 @@
                 02 fv_cle.
                     03 fv_id PIC 9(15).
                     03 fv_statut PIC 9(15).
-                02 fv_dateVente PIC X(10).
+                02 fv_dateVente.
+                        03 dateYear PIC 9(4).
+                        03 dateMonth PIC 9(2).
+                        03 dateDay PIC 9(2).
                 02 fv_titreComics PIC A(30).
                 02 fv_prixVente PIC 9(6)v9(2).
                 02 fv_client PIC 9(15).
@@ -109,7 +112,10 @@
                02 ve_cle.
                     03 ve_id PIC 9(15).
                     03 ve_statut PIC 9(15).
-                02 ve_dateVente PIC X(10).
+               02 ve_dateVente.
+                        03 dateYear PIC 9(4).
+                        03 dateMonth PIC 9(2).
+                        03 dateDay PIC 9(2).
                 02 ve_titreComics PIC A(30).
                 02 ve_prixVente PIC 9(6)v9(2).
                 02 ve_client PIC 9(15).
