@@ -29,12 +29,11 @@
                         ACCEPT fi_auteur
                 END-PERFORM
 
-                *>On demande à l'utilisateur de rentrer la quantité
-                *>d'exemplaires du comics (ne peut pas être négatif)
-                PERFORM WITH TEST AFTER UNTIL fi_quantite>=0
-                        DISPLAY "Entrez la quantite"
-                        ACCEPT fi_quantite
-                END-PERFORM
+                *>La quantité est par défaut 0 car cela signifie que 
+                *>ce comic peut être commandé, si on veut ajouter un
+                *>comic à l'inventaire de la boutique avec une quantite
+                *>!=0 alors il faut passer par "enregistrer achat"
+                MOVE 0 TO fi_quantite
 
                 *>On demande à l'utilisateur de rentrer le prix de vente
                 *>unitaire du comics (ni nul ni négatif)
@@ -55,7 +54,7 @@
                 MOVE 0 TO trouve
                 OPEN INPUT finventaire
                 MOVE idRef TO fi_id
-                READ finventaire
+                READ finventaire KEY IS fi_id
                 *>L'id existe déjà
                 INVALID KEY MOVE 0 TO trouve
                 *>L'id n'existe pas déjjà
@@ -64,13 +63,13 @@
                 CLOSE finventaire
                 *>On ferme le fichier puis on le réouvre afin que le
                 *>pointeur qui parcourt le fichier repart depuis le 
-                *>début de celui-ci
-                OPEN INPUT finventaire
+                *>début de celui-ci     
                 IF trouve = 1
                 THEN 
+                     OPEN INPUT finventaire
                      DISPLAY "Liste des identifiants deja attribues"
                      PERFORM WITH TEST AFTER UNTIL Wfin =0
-                        READ fachats NEXT
+                        READ finventaire NEXT
                         AT END 
                          DISPLAY "L'id entre est deja attribue"
                          MOVE 0 TO Wfin
@@ -78,8 +77,9 @@
                           DISPLAY "----------------"
                         END-READ
                      END-PERFORM
-                END-IF      
-                CLOSE finventaire.
+                     CLOSE finventaire
+                END-IF.      
+                
 
         *>Cette méthode vérifie que le titre donné est déjà attribué ou
         *>non à une référence dans l'inventaire
@@ -97,12 +97,12 @@
                 *>On ferme le fichier puis on le réouvre afin que le
                 *>pointeur qui parcourt le fichier repart depuis le 
                 *>début de celui-ci
-                OPEN INPUT finventaire
                 IF trouve = 1
                 THEN 
+                     OPEN INPUT finventaire
                      DISPLAY "Liste des titres deja attribues"
                      PERFORM WITH TEST AFTER UNTIL Wfin =0
-                        READ fachats NEXT
+                        READ finventaire NEXT
                         AT END 
                          DISPLAY "Le titre entre est deja attribue"
                          MOVE 0 TO Wfin
@@ -110,8 +110,9 @@
                           DISPLAY "----------------"
                         END-READ
                      END-PERFORM
-                END-IF
-                CLOSE finventaire.
+                      CLOSE finventaire
+                END-IF.
+               
 
         *>Cette méthode supprime la référence du comic dont le titre
         *>est demandé à l'utilisateur dans le fichier
@@ -270,4 +271,25 @@
                 WHEN OTHER
                    DISPLAY "Choix invalide, rentrez un nouveau chiffre"
                 END-EVALUATE
+                CLOSE finventaire.
+
+        *>Cette méthode affiche l'ensemble des comics présents dans 
+        *>l'inventaire du magasin
+        AFFICHER_COMIC.
+                OPEN INPUT finventaire
+                MOVE 1 TO Wfin
+                *>Lecture séquentielle du fichier jusqu'à sa fin
+                PERFORM WITH TEST AFTER UNTIL Wfin = 0
+                   READ finventaire NEXT
+                   AT END MOVE 0 TO Wfin
+                   NOT AT END 
+                       *>Affichage des informations liées à l'achat
+                       DISPLAY "Id comic:", fi_id
+                       DISPLAY "Titre du comic :", fi_titre
+                       DISPLAY "Auteur du comic :", fi_auteur
+                       DISPLAY "Quantité :", fi_quantite
+                       DISPLAY "Prix unitaire :", fi_prix
+                       DISPLAY "----------------------------------"
+                   END-READ
+                END-PERFORM
                 CLOSE finventaire.

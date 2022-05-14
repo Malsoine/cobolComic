@@ -23,6 +23,7 @@
            access mode is dynamic
            record key is fi_titre
            alternate record key is fi_auteur WITH DUPLICATES
+           alternate record key is fi_id
            file status is cr_finventaire.
 
            select fclients assign to "clients.dat"

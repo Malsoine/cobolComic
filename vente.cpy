@@ -243,4 +243,4 @@
                        DISPLAY "----------------------------------"
                    END-READ
                 END-PERFORM
-                CLOSE fachats.
+                CLOSE fventes.

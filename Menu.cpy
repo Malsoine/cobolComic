@@ -119,13 +119,14 @@
                         DISPLAY "      -Ajouter un comic en stock(5)"
                         DISPLAY "      -Supprimer un comic (6)"
                         DISPLAY "      -Modifier un comic (7)"
+        DISPLAY "    -Afficher les comics présent dans l'inventaire (8)"
                         DISPLAY "      -RETOUR (0)"
 
 
                         ACCEPT choixMenu2
 
 
-                        IF choixMenu2 > 7 THEN
+                        IF choixMenu2 > 8 THEN
 
                         PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
                                 DISPLAY "Ressaisissez !"
@@ -154,6 +155,8 @@
 
                                 WHEN choixMenu2 = 7
                                         PERFORM MODIFIER_PRIX_COMIC
+                                WHEN choixMenu2 = 8
+                                        PERFORM AFFICHER_COMIC
                         END-EVALUATE
                 END-PERFORM
 
@@ -176,7 +179,7 @@
 
                         IF choixMenu2 > 5 THEN
 
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 5
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
@@ -349,7 +352,7 @@
                         DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
                         IF choixMenu2 > 5 THEN
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 5
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
