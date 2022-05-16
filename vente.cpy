@@ -1,21 +1,34 @@
+           *>Cette méthode enregistre une vente ou une commande en
+           *>fonction de si le comic acheté par le client a des
+           *>exemplaires en stock ou non
            ENREGISTRER_VENTE.
            MOVE 0 TO trouveVente
            MOVE 0 TO VerifClient
            MOVE 0 TO VerifVente
-           PERFORM WITH TEST AFTER UNTIL VerifVente = 0
+
+           *>On demande à l'utilisateur de rentrer id de la vente
+           *>ou de la commande
+           PERFORM WITH TEST AFTER UNTIL verifVente = 0
                         DISPLAY "Entrez l'id de la vente:"
                         ACCEPT idVente
                         PERFORM VERIF_ID_VENTE
            END-PERFORM
+
+           *>On demande à l'utilisateur de rentrer le titre du comic
+           *>acheté par un client
            PERFORM WITH TEST AFTER UNTIL trouveVente = 1
                         DISPLAY "Entrez le nom du comic achete :"
                         ACCEPT titreRef
                         PERFORM VERIF_NOM_REF
            END-PERFORM
 
+           *>On demande à l'utilisateur de rentrer le nom et prénom du
+           *>client qui fait cet achat et on vérifie si il existe dans
+           *>le fichier des clients du la boutique ou non
            PERFORM VERIF_CLIENT_VENTE
-
-           MOVE FUNCTION CURRENT-DATE TO ve_dateVente
+           
+           *>Rentre la date du système comme date d'achat
+           MOVE FUNCTION CURRENT-DATE TO fv_dateVente
 
            *>Récupération du prix de vente du comic dans le fichier
            *>inventaire          
@@ -23,7 +36,7 @@
 
            *>Vérification du nombre d'exemplaire du comic en stock
             PERFORM VERIF_STOCKS
-           *>IL y a des exemplaires en stock
+           *>IL y a des exemplaires en stock, on enregistre une vente
             IF fv_statut = 0 THEN
                 MOVE idVerifClient TO fv_client
                 MOVE idVente TO fv_id
@@ -37,7 +50,7 @@
                 END-WRITE
                 DISPLAY "Vente enregistree"
                 CLOSE fventes
-            *>Il n'y a pas d'exemplaire en stock on effectue donc une
+            *>Il n'y a pas d'exemplaire en stock on enregistre donc une
             *>commande
             ELSE
                 DISPLAY "Le comic voulu n'a pas d'exemplaire en stock"
@@ -56,6 +69,8 @@
                 CLOSE fventes
             END-IF.
 
+           *>Cette méthode vérifie si le titre du comic entré existe 
+           *>ou non
            VERIF_NOM_REF.
                 OPEN INPUT finventaire
                 MOVE titreRef TO fi_titre
@@ -65,6 +80,9 @@
                 END-READ
                 CLOSE finventaire.
 
+           *>Cette méthode demande à l'utilisateur d'entrer le nom et
+           *>prénom d'un client, si celui-ci n'existe pas alors on le
+           *>créer
            VERIF_CLIENT_VENTE.
 
                OPEN INPUT fclients
@@ -74,33 +92,45 @@
                    ACCEPT cl_nom
                    DISPLAY "Entrez le prenom du client : "
                    ACCEPT cl_prenom
+
+                   *>Lecture séquentielle du fichier fclients pour
+                   *>savoir si le client donné existe ou non
                    PERFORM WITH TEST AFTER UNTIL fichierFin=0
                        READ fclients NEXT
                        AT END MOVE 0 TO fichierFin
                        NOT AT END
+                       *>Le client existe
                        IF fc_nom = cl_nom AND fc_prenom = cl_prenom THEN
                           MOVE 1 TO testNomClient
                           MOVE fc_id TO idVerifClient
                        END-IF
                        END-READ
                    END-PERFORM
+                   *>Le client n'existe pas, on le créé
                    IF testNomClient = 0 THEN
                    DISPLAY "Le client n'existe pas , creation !"
                         PERFORM AJOUT_CLIENT
                    END-IF
                    CLOSE fclients.
 
+           *>Cette méthode vérifie si l'id de la vente donné est déjà
+           *>utilisé ou non dans le fichier fventes
            VERIF_ID_VENTE.
                MOVE idVente TO fv_id
                MOVE 1 TO Wfin
                OPEN INPUT fventes
                READ fventes
                KEY IS fv_id
-               INVALID KEY MOVE 0 TO VerifVente
-               NOT INVALID KEY MOVE 1 TO VerifVente
+               *>L'id donné n'existe pas
+               INVALID KEY MOVE 0 TO verifVente
+               *>L'id donné existe
+               NOT INVALID KEY MOVE 1 TO verifVente
                END-READ
                CLOSE fventes
-               IF VerifVente = 1 THEN
+               *>L'id donné existe, on affiche l'ensemble des id 
+               *>utilisés dans le fichier fventes pour aider la saisie
+               *>de l'utilisateur
+               IF verifVente = 1 THEN
                   OPEN INPUT fventes
                   DISPLAY "Liste des id de ventes deja attribues"
                   PERFORM WITH TEST AFTER UNTIL Wfin =0
@@ -114,118 +144,178 @@
                      CLOSE fventes
                 END-IF.
                 
-
+           *>Cette méthode récupère le prix unitaire de vente d'un
+           *>comic dont le titre est donné
            RECUPERER_PRIX_DE_VENTE.
                 OPEN INPUT finventaire
                 MOVE titreRef TO fi_titre
                 READ finventaire
-                INVALID KEY DISPLAY "erreur comic non trouve"
+                INVALID KEY DISPLAY "Erreur : ce comic n'existe pas"
                 NOT INVALID KEY
                     MOVE fi_prix TO fv_prixVente
                 CLOSE finventaire.
 
+           *>Cette méthode vérifie si le comic dont le titre est donné
+           *>possède des exemplaires en stock ou non
            VERIF_STOCKS.
            MOVE 0 TO fv_statut
            OPEN INPUT finventaire
                MOVE titreRef TO fi_titre
                READ finventaire
-               INVALID KEY DISPLAY "erreur comic non trouve"
+               INVALID KEY DISPLAY "Erreur : ce comic n'existe pas"
                NOT INVALID KEY
+               *>Le comic possède des exemplaires en stock
                IF fi_quantite > 0
                THEN
                    MOVE 0 TO fv_statut
                ELSE
+                   *>Le comic ne possède pas d'exemplaire en stock
                    MOVE 1 TO fv_statut
                END-IF
-                END-READ
+               END-READ
            CLOSE finventaire.
 
-
+           *>Cette méthode ajoute  1 point de fidélité au client
+           *>qui a affectué un achat de comic
            AJOUTER_PTS_FIDELITE.
            OPEN I-O fclients
            MOVE fv_client TO fc_id
            READ fclients KEY IS fc_id
                 INVALID KEY
-                        DISPLAY "Erreur client non trouve"
+                        DISPLAY "Erreur : ce client n'existe pas"
                 NOT INVALID KEY
                         *>MOVE fc_ptsFidelite TO LatentPoint
                         ADD 1 TO fc_ptsFidelite END-ADD
                         *>MOVE LatentPoint TO fc_ptsFidelite
                         REWRITE tamp_fclient
-                    INVALID KEY DISPLAY "Erreur ajout pts de fidelite"
-           NOT INVALID KEY DISPLAY "Reussite ajout pts de fidelite"
+                    INVALID KEY 
+         DISPLAY "Erreur concernant la mise à jour des pts de fidelites"
+           NOT INVALID KEY DISPLAY "Mise a jour des pts de fidelites"
                         END-REWRITE
            END-READ
            CLOSE fclients.      
 
+           *>Cette méthode met à jour les stock du magasin après 
+           *>l'achat d'un comic par un client
            MAJ_INVENTAIRE.
            OPEN I-O finventaire
            MOVE titreRef TO fi_titre
            READ finventaire KEY IS fi_titre
-                INVALID KEY DISPLAY "Erreur : comic non trouve"
+                INVALID KEY DISPLAY "Erreur : ce comic n'existe pas"
                 NOT INVALID KEY
-                        SUBTRACT 1 FROM fi_quantite END-SUBTRACT
-                REWRITE tamp_finventaire
-           INVALID KEY DISPLAY "Erreur mise a jour du stock"
-           NOT INVALID KEY DISPLAY "Reussite de la mise a jour du stock"
-                        
-           END-REWRITE
+                        *>Dans le cas où il s'agit d'une vente, c'est à 
+                        *>dire lorsque le comic dont le titre est donné
+                        *>a des exemplaires en stock
+                        IF fi_quantite > 0 THEN
+                          SUBTRACT 1 FROM fi_quantite END-SUBTRACT
+                          REWRITE tamp_finventaire
+                     INVALID KEY DISPLAY "Erreur : mise a jour du stock"
+           NOT INVALID KEY DISPLAY "Mise a jour du stock"
+                        END-REWRITE                        
+                        END-IF           
            END-READ
-           CLOSE finventaire.
-
-
-           VERIF_ID_COMMANDE.
-           MOVE idCommande TO fv_id
-           OPEN INPUT fventes
-           READ fventes
-           KEY IS fv_id
-           INVALID KEY MOVE 0 TO VerifVente
-           NOT INVALID KEY MOVE 1 TO VerifVente
-           END-READ
-           CLOSE fventes.
-
-
+           CLOSE finventaire.           
+ 
+           *>Cette méthode permet de mettre à jour le status d'une
+           *>commande
            MAJ_STATUT_COMMANDE.
-           MOVE 0 TO VerifVente
            MOVE 0 TO idCommande
-           MOVE 0 TO VerifStatut
+           MOVE 0 TO verifStatut 
 
-           PERFORM WITH TEST AFTER UNTIL VerifVente = 1
-                   OPEN I-O fventes
-                   DISPLAY "Entrez l'id de la commande: "
-                   ACCEPT idCommande
-                   READ fventes
-                   KEY IS idCommande
-                   INVALID KEY
-                   MOVE 0 TO VerifVente
-                   CLOSE fventes
-                   NOT INVALID KEY
-                   IF fv_statut = 0 THEN
-                   DISPLAY "La vente n'est pas une commande"
-                   ELSE
-                      PERFORM WITH TEST AFTER UNTIL VerifStatut = 1
-                           ACCEPT EtatStatut
-                           IF EtatStatut > 1 AND EtatStatut < 4 THEN
-                               MOVE 1 TO VerifStatut
-                           ELSE
-                               MOVE 0 TO VerifStatut
-                           END-IF
-                       END-PERFORM
-                   MOVE EtatStatut TO fv_statut
+           *>On demande à l'utilisateur de rentrer l'id de la commande
+           *>que l'on veut mettre à jour           
+           DISPLAY "Entrez l'id de la commande : "
+           ACCEPT idCommande
+
+
+           OPEN I-O fventes          
+           MOVE idCommande TO fv_id
+           READ fventes KEY IS fv_id
+                *>L'id donné n'existe pas
+                INVALID KEY 
+                DISPLAY "Erreur, cet id n'est pas attribue" 
+                *>L'id donné existe 
+                NOT INVALID KEY 
+                        *>Mais il s'agit d'une vente     
+                        IF fv_statut = 0 THEN
+            DISPLAY "L'id rentre concerne une vente et non une commande"
+                        *>Il s'agit bien d'une commande                
+                        ELSE
+                        *>Affichage du statut actuelle de la commande
+                        DISPLAY "Statut de la commande :", fv_statut
+                      *>On demande à l'utilisateur de rentrer le nouveau
+                      *>statut de la commande
+                      PERFORM WITH TEST AFTER UNTIL verifStatut = 1 
+              DISPLAY "Entrez  le nouveau statut de la commande (1,2,3)"
+                        ACCEPT etatStatut
+                        *>Les status possibles sont : 1, 2 et 3 
+                        IF etatStatut > 1 AND etatStatut < 4 THEN 
+                           MOVE 1 TO verifStatut
+                        ELSE
+                           MOVE 0 TO verifStatut
+                        END-IF 
+                   END-PERFORM
+                   MOVE etatStatut TO fv_statut
+                   *>On écrit la modification
+                   DISPLAY "TEST C :", fv_statut
                    REWRITE tamp_fvente
-               INVALID KEY 
-            DISPLAY "Erreur de la modification du status de la commande"
-                 NOT INVALID KEY DISPLAY "La modification est faite"
-
-                   MOVE 1 TO VerifVente
+                   INVALID KEY
+                      DISPLAY cr_fventes
+                   NOT INVALID KEY DISPLAY "Modification enregistree"
                    END-REWRITE
-                   END-IF
-                   END-READ
-                   CLOSE fventes
-           END-PERFORM.
+                END-IF               
+           END-READ
+           DISPLAY "TEST D :", fv_statut
+           CLOSE fventes. 
 
-           *>Affiche la liste des ventes
-           AFFICHER_VENTE.
+           *>Cette méthode calcul le chiffre d'affaire de la boutique
+           *>à une date donnée
+           CALCULER_CHIFFRE_AFFAIRE. 
+           MOVE 0 TO CA
+           MOVE 0 TO nbVente
+           MOVE 1 TO Wfin
+
+           *>On demande à l'utilisateur de rentrer la date pour laquelle
+           *>il veut avoir cette information
+           DISPLAY "Entrez la date du chiffre d'affaire a conculter"
+           DISPLAY "Entrez l'annee"
+           ACCEPT an
+           DISPLAY "Entrez le mois"
+           ACCEPT mois
+           DISPLAY "Entrez le jour"
+           ACCEPT jour
+        
+           OPEN INPUT fventes
+           *>Lecture séquentielle du fichier fventes
+           PERFORM WITH TEST AFTER UNTIL Wfin = 0           
+                READ fventes NEXT
+                AT END MOVE 0 TO Wfin
+                NOT AT END
+                    *>Lorsque la date de la vente ou de la commande
+                    *>correspond à la date rentrée par l'utilisateur,
+                    *>on compte son prix dans le chiffre d'affaire
+                    IF dateYearV = an AND dateMOnthV = mois 
+                        AND dateDayV = jour THEN
+                        ADD 1 TO nbVente END-ADD
+                        ADD fv_prixVente TO CA END-ADD
+                    END-IF
+                END-READ
+           END-PERFORM
+           CLOSE fventes
+           *>Si le chiffre d'affaire est nul alors cela signifie que
+           *>ce jour là, la boutique n'a pas eu de ventes/commandes
+           IF CA = 0 THEN
+            DISPLAY "La boutique n'a eu acune vente/commande ce jour là"
+           ELSE     
+             *>Affichage des résultats trouvé      
+             DISPLAY "Bilan pour la date du : ", an, mois, jour
+             DISPLAY "Chiffre d'affaire :", CA
+             DISPLAY "Nombre de ventes/commandes du jour :", nbVente
+          END-IF.
+          
+          *>Cette méthode affiche l'historique des commandes 
+          *>du magasin      
+           AFFICHER_COMMANDE. 
                 OPEN INPUT fventes
                 MOVE 1 TO Wfin
                 *>Lecture séquentielle du fichier jusqu'à sa fin
@@ -233,14 +323,47 @@
                    READ fventes NEXT
                    AT END MOVE 0 TO Wfin
                    NOT AT END 
-                       *>Affichage des informations liées à l'achat
-                       DISPLAY "Id de la vente :", fv_id
-                       DISPLAY "Statut de la vente :", fv_statut
-                       DISPLAY "Date de la vente :", fv_dateVente
-                       DISPLAY "Comic vendu :", fv_titreComics
-                       DISPLAY "Prix de la vente :", fv_prixVente
-                       DISPLAY "Id du client :", fv_client
-                       DISPLAY "----------------------------------"
+                       IF fv_statut=1 OR fv_statut=2 OR fv_statut=3 THEN
+                        *>Affichage des informations liées à la commande
+                        DISPLAY "Id de la commande :", fv_id
+                        DISPLAY "Statut de la commande :", fv_statut
+                        DISPLAY "Date de la commande :", fv_dateVente
+                        DISPLAY "Comic commande :", fv_titreComics
+                        DISPLAY "Prix :", fv_prixVente
+                        DISPLAY "Id du client :", fv_client
+                        DISPLAY "----------------------------------"
+                       END-IF
                    END-READ
                 END-PERFORM
+                CLOSE fventes.
+          
+           *>Cette méthode affiche la liste des ventes du magasin
+           AFFICHER_VENTE.
+                MOVE 1 TO Wfin
+                OPEN INPUT fventes               
+                MOVE 0 TO fv_statut
+                
+                *>Lecture sur zone en fonction de l'attribut fv_statut
+                *> =0, c'est-à-dire sur les ventes
+                *>une CSAD
+                START fventes, KEY IS = fv_dateVente
+                *>La boutique n'a enregistrée aucune vente
+            INVALID KEY DISPLAY "La boutique n'a pas réalisee de ventes"
+                *>La boutique a enregistrée des ventes
+                NOT INVALID KEY                
+                    *>Lecture de la zone et jusqu'à la fin de celle-ci
+                    PERFORM WITH TEST AFTER UNTIL Wfin = 0
+                    READ fventes NEXT
+                    AT END MOVE 0 TO Wfin
+                    NOT AT END 
+                        *>Affichage des informations liées à la vente
+                        DISPLAY "Id de la vente :", fv_id
+                        DISPLAY "Date de la vente :", fv_dateVente
+                        DISPLAY "Comic vendu :", fv_titreComics
+                        DISPLAY "Prix de la vente :", fv_prixVente
+                        DISPLAY "Id du client :", fv_client
+                        DISPLAY "----------------------------------"
+                   END-READ
+                END-PERFORM
+                END-START
                 CLOSE fventes.
