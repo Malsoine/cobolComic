@@ -14,8 +14,8 @@
            select fventes assign to "ventes.dat"
            organization indexed
            access mode is dynamic
-           record key is fv_cle
-           alternate record key is fv_datevente WITH DUPLICATES
+           record key is fv_id
+           alternate record key is fv_dateVente WITH DUPLICATES
            file status is cr_fventes.
 
            select finventaire assign to "inventaire.dat"
@@ -40,22 +40,21 @@
            01 tamp_fachats.
                 02 fa_id PIC 9(15).
                 02 fa_dateAchat.
-                        03 dateYear PIC 9(4).
-                        03 dateMonth PIC 9(2).
-                        03 dateDay PIC 9(2).
+                        03 dateYearA PIC 9(4).
+                        03 dateMonthA PIC 9(2).
+                        03 dateDayA PIC 9(2).
                 02 fa_titreComics PIC A(30).
                 02 fa_quantite PIC 9(4).
                 02 fa_prixAchat PIC 9(6)v9(2).
                 02 fa_nomFournisseur PIC A(30).
        FD fventes.
            01 tamp_fvente.
-                02 fv_cle.
-                    03 fv_id PIC 9(15).
-                    03 fv_statut PIC 9(15).
+                02 fv_id PIC 9(15).
+                02 fv_statut PIC 9(15).
                 02 fv_dateVente.
-                        03 dateYear PIC 9(4).
-                        03 dateMonth PIC 9(2).
-                        03 dateDay PIC 9(2).
+                        03 dateYearV PIC 9(4).
+                        03 dateMonthV PIC 9(2).
+                        03 dateDayV PIC 9(2).
                 02 fv_titreComics PIC A(30).
                 02 fv_prixVente PIC 9(6)v9(2).
                 02 fv_client PIC 9(15).
@@ -102,21 +101,20 @@
            01 achat.
                 02 ac_id PIC 9(15).
                 02 ac_dateAchat.
-                        03 dateYear PIC 9(4).
-                        03 dateMonth PIC 9(2).
-                        03 dateDay PIC 9(2).
+                        03 dateYearAc PIC 9(4).
+                        03 dateMonthAc PIC 9(2).
+                        03 dateDayAc PIC 9(2).
                 02 ac_titreComics PIC A(30).
                 02 ac_quantite PIC 9(4).
                 02 ac_prixAchat PIC 9(6)v9(2).
                 02 ac_nomFournisseur PIC A(30).
            01 vente.
-               02 ve_cle.
-                    03 ve_id PIC 9(15).
-                    03 ve_statut PIC 9(15).
+               02 ve_id PIC 9(15).
+               02 ve_statut PIC 9(15).
                02 ve_dateVente.
-                        03 dateYear PIC 9(4).
-                        03 dateMonth PIC 9(2).
-                        03 dateDay PIC 9(2).
+                        03 dateYearVe PIC 9(4).
+                        03 dateMonthVe PIC 9(2).
+                        03 dateDayVe PIC 9(2).
                 02 ve_titreComics PIC A(30).
                 02 ve_prixVente PIC 9(6)v9(2).
                 02 ve_client PIC 9(15).
@@ -140,12 +138,16 @@
            77 nomComicVente PIC A(30).
            77 verifClient PIC 9(1).
            77 idVerifClient PIC 9(15).
-           77 VerifVente PIC 9(1).
+           77 verifVente PIC 9(1).
            77 idVente PIC 9(15).
            77 idCommande PIC 9(15).
-           77 VerifStatut PIC 9(1).
-           77 EtatStatut PIC 9(15).
-           77 LatentPoint PIC 9(3).
+           77 verifStatut PIC 9(1).
+           77 etatStatut PIC 9(15).
+           77 CA PIC 9(10).
+           77 nbVente PIC 9(10).
+           77 an PIC 9(4).
+           77 mois PIC 9(2).
+           77 jour PIC 9(2).
 
 
        PROCEDURE DIVISION.

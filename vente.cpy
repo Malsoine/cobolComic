@@ -88,7 +88,7 @@
                OPEN INPUT fclients
                 MOVE 0 TO testNomClient
                 MOVE 1 TO fichierFin
-                   DISPLAY"Entrez le nom du client : "
+                   DISPLAY "Entrez le nom du client : "
                    ACCEPT cl_nom
                    DISPLAY "Entrez le prenom du client : "
                    ACCEPT cl_prenom
@@ -257,15 +257,13 @@
                    END-PERFORM
                    MOVE etatStatut TO fv_statut
                    *>On écrit la modification
-                   DISPLAY "TEST C :", fv_statut
                    REWRITE tamp_fvente
                    INVALID KEY
-                      DISPLAY cr_fventes
+                      DISPLAY "Erreur de mise à jour du statut"
                    NOT INVALID KEY DISPLAY "Modification enregistree"
                    END-REWRITE
                 END-IF               
            END-READ
-           DISPLAY "TEST D :", fv_statut
            CLOSE fventes. 
 
            *>Cette méthode calcul le chiffre d'affaire de la boutique
@@ -341,18 +339,9 @@
            AFFICHER_VENTE.
                 MOVE 1 TO Wfin
                 OPEN INPUT fventes               
-                MOVE 0 TO fv_statut
-                
-                *>Lecture sur zone en fonction de l'attribut fv_statut
-                *> =0, c'est-à-dire sur les ventes
-                *>une CSAD
-                START fventes, KEY IS = fv_dateVente
-                *>La boutique n'a enregistrée aucune vente
-            INVALID KEY DISPLAY "La boutique n'a pas réalisee de ventes"
-                *>La boutique a enregistrée des ventes
-                NOT INVALID KEY                
-                    *>Lecture de la zone et jusqu'à la fin de celle-ci
-                    PERFORM WITH TEST AFTER UNTIL Wfin = 0
+                *>Lecture séquentielle du fichier fventes jusqu'à ça
+                *>fin
+                PERFORM WITH TEST AFTER UNTIL Wfin = 0
                     READ fventes NEXT
                     AT END MOVE 0 TO Wfin
                     NOT AT END 
@@ -364,6 +353,5 @@
                         DISPLAY "Id du client :", fv_client
                         DISPLAY "----------------------------------"
                    END-READ
-                END-PERFORM
-                END-START
+                END-PERFORM                
                 CLOSE fventes.
