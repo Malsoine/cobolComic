@@ -1,5 +1,9 @@
-        *>Methode qui ajoute une nouvelle référence (d'un comics) dans
-        *>l'inventaire de la boutique
+        *>Methode qui ajoute un nouveau comic dans l'inventaire 
+        *>de la boutique, ce comic n'a pas d'exemplaires en stock,
+        *>il est donc commandable
+        *>Pour avoir un nouveau comic dans l'inventaire et qu'il ait
+        *>des exemplaires en stock, il faut passer par la méthode
+        *>ENREGISTRER_ACHAT
         AJOUTER_REFERENCE.
                 *>On demande à l'utilisateur de rentrer l'id de la réf
                 PERFORM WITH TEST AFTER UNTIL trouve=0
@@ -283,7 +287,7 @@
                    READ finventaire NEXT
                    AT END MOVE 0 TO Wfin
                    NOT AT END 
-                       *>Affichage des informations liées à l'achat
+                       *>Affichage des informations liées à l'inventaire
                        DISPLAY "Id comic:", fi_id
                        DISPLAY "Titre du comic :", fi_titre
                        DISPLAY "Auteur du comic :", fi_auteur

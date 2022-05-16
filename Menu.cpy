@@ -1,4 +1,3 @@
-
         MENU_PRINC.
 
                 MOVE 0 TO trouveMenu
@@ -8,7 +7,7 @@
                         DISPLAY "0 pour un employe"
                         DISPLAY "1 pour le gerant"
                         DISPLAY " "
-                        DISPLAY "2 Installation du jeu d'essai"
+                        DISPLAY "2 Guide d'utilisation"
                         ACCEPT utilisateur
                         IF utilisateur = "0" OR utilisateur = "1" OR
                         utilisateur = "2" THEN
@@ -24,8 +23,8 @@
                 ELSE IF utilisateur = "1" THEN
                         PERFORM MENU_GERANT
                 ELSE
-                        DISPLAY "FAIRE JEU D'ESSAI"
-                        PERFORM MENU_PRINC
+                        PERFORM MENU_PRINC                        
+                        *>PERFORM GUIDE_UTILISATEUR
                 END-IF.
 
 
@@ -69,11 +68,12 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                     DISPLAY "   -- GESTION CLIENTS --"
-              DISPLAY "      -Consulter les points d'un clients (1)"
-                    DISPLAY "      -Ajouter un client (2)"
-                    DISPLAY "      -Supprimer un client (3)"
-                    DISPLAY "      -Modifier les infos d'un client (4)"
-                    DISPLAY "      -Afficher la liste des clients (5)"
+                    DISPLAY "      -Ajouter un client (1)"
+                 DISPLAY "      -Consulter les points d'un clients (2)"  
+                  
+                    DISPLAY "      -Modifier les infos d'un client (3)"
+                    DISPLAY "      -Afficher la liste des clients (4)"
+                    DISPLAY "      -Supprimer un client (5)"
                     DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
@@ -89,19 +89,20 @@
 
                         EVALUATE TRUE
                                 WHEN choixMenu2 = 1
-                                       PERFORM CONSULTER_PTS_FIDELITE
-                                WHEN choixMenu2 = 2
 
-                                        PERFORM AJOUT_CLIENT
+                                       PERFORM AJOUT_CLIENT
+                                WHEN choixMenu2 = 2
+                                       
+                                       PERFORM CONSULTER_PTS_FIDELITE
                                 WHEN choixMenu2 = 3
 
-                                        PERFORM SUPPR_CLIENT
+                                       PERFORM MODIFIER_INFO_CLIENT
                                 WHEN choixMenu2 = 4
 
-                                       PERFORM MODIFIER_INFO_CLIENT
+                                       PERFORM AFFICHER_LISTE_CLIENTS
                                WHEN choixMenu2 = 5
-                                   PERFORM AFFICHER_LISTE_CLIENTS
-
+                                   
+                                      PERFORM SUPPR_CLIENT
                         END-EVALUATE
                 END-PERFORM
 
@@ -113,20 +114,19 @@
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION STOCKS --"
                         DISPLAY "      -Enregistrer un achat (1)"
-                     DISPLAY "      -Afficher la liste des achats (2)"
+                       DISPLAY "      -Afficher la liste des achats (2)"
                         DISPLAY "      -Rechercher comic (3)"
-                        DISPLAY "      -Consulter les stocks (4)"
+              DISPLAY "      -Consulter l'inventaire de la boutique (4)"
                         DISPLAY "      -Ajouter un comic en stock(5)"
-                        DISPLAY "      -Supprimer un comic (6)"
-                        DISPLAY "      -Modifier un comic (7)"
-        DISPLAY "    -Afficher les comics présent dans l'inventaire (8)"
+                        DISPLAY "      -Modifier un comic (6)"
+                        DISPLAY "      -Supprimer un comic (7)"
                         DISPLAY "      -RETOUR (0)"
 
 
                         ACCEPT choixMenu2
 
 
-                        IF choixMenu2 > 8 THEN
+                        IF choixMenu2 > 7 THEN
 
                         PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
                                 DISPLAY "Ressaisissez !"
@@ -150,13 +150,10 @@
                                        PERFORM AJOUTER_REFERENCE
 
                                 WHEN choixMenu2 = 6
-
-                                       PERFORM SUPPRIMER_REFERENCE
-
+                                       PERFORM MODIFIER_PRIX_COMIC
+                                       
                                 WHEN choixMenu2 = 7
-                                        PERFORM MODIFIER_PRIX_COMIC
-                                WHEN choixMenu2 = 8
-                                        PERFORM AFFICHER_COMIC
+                                       PERFORM SUPPRIMER_REFERENCE
                         END-EVALUATE
                 END-PERFORM
 
@@ -169,10 +166,10 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION VENTE --"
-                DISPLAY "      -Enregistrer une vente/commande (1)"
+              DISPLAY "      -Enregistrer une vente ou une commande (1)"
            DISPLAY "      -Mise à jour statut de la commande (2)"
-                        DISPLAY "      -Historique commandes (3)"
-                       DISPLAY "      -Afficher la liste des ventes (4)"
+                        DISPLAY "      -Historique des commandes (3)"
+                        DISPLAY "      -Historique des ventes (4)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
@@ -187,16 +184,15 @@
 
                         EVALUATE TRUE
                                 WHEN choixMenu2 = 1
-
                                         PERFORM ENREGISTRER_VENTE
+
                                 WHEN choixMenu2 = 2
                                         PERFORM MAJ_STATUT_COMMANDE
                                         DISPLAY "2"
                                 WHEN choixMenu2 = 3
+                                        PERFORM AFFICHER_COMMANDE
 
-                                        DISPLAY "3"
                                 WHEN choixMenu2 = 4
-
                                         PERFORM AFFICHER_VENTE
                         END-EVALUATE
                 END-PERFORM
@@ -210,7 +206,7 @@
            MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- STATISTIQUES --"
-                    DISPLAY "      -Statistiques Client (1)"
+                 DISPLAY "      -Statistiques de vente pour un jour (1)"
                         DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
                         IF choixMenu2 > 3 THEN
@@ -221,7 +217,7 @@
                         END-IF
                         EVALUATE TRUE
                                 WHEN choixMenu2 = 1
-                                        PERFORM STATISTIQUES_CLIENT
+                                        PERFORM CALCULER_CHIFFRE_AFFAIRE
                         END-EVALUATE
                 END-PERFORM
 
@@ -270,11 +266,12 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                          DISPLAY "   -- GESTION CLIENTS --"
-              DISPLAY "      -Consulter les points d'un clients (1)"
-                    DISPLAY "      -Ajouter un client (2)"
-                    DISPLAY "      -Supprimer un client (3)"
-                    DISPLAY "      -Modifier les infos d'un client (4)"
-                    DISPLAY "      -Afficher la liste des clients (5)"
+                    DISPLAY "      -Ajouter un client (1)"
+                  DISPLAY "      -Consulter les points d'un clients (2)"
+                    DISPLAY "      -Modifier les infos d'un client (3)"
+                    DISPLAY "      -Afficher la liste des clients (4)"
+                    
+                    DISPLAY "      -Supprimer un client (5)"
                     DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
 
@@ -288,19 +285,19 @@
                         END-IF
                         EVALUATE TRUE
                                 WHEN choixMenu2 = 1
+                                       PERFORM AJOUT_CLIENT
                                        PERFORM CONSULTER_PTS_FIDELITE
                                 WHEN choixMenu2 = 2
-
-                                        PERFORM AJOUT_CLIENT
-
+                                       PERFORM CONSULTER_PTS_FIDELITE
+                                        
                                 WHEN choixMenu2 = 3
-
-                                        PERFORM SUPPR_CLIENT
-                                WHEN choixMenu2 = 4
-
                                         PERFORM MODIFIER_INFO_CLIENT
-                                WHEN choixMenu2 = 5
+                                        
+                                WHEN choixMenu2 = 4
                                         PERFORM AFFICHER_LISTE_CLIENTS
+                                        
+                                WHEN choixMenu2 = 5
+                                        PERFORM SUPPR_CLIENT
                         END-EVALUATE
                 END-PERFORM
 
@@ -312,7 +309,7 @@
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION STOCKS --"
                         DISPLAY "      -Rechercher un comic (1)"
-                        DISPLAY "      -Consulter l'inventaire (2)"
+              DISPLAY "      -Consulter l'inventaire de la boutique (2)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
@@ -345,13 +342,13 @@
                 MOVE 0 TO choixMenu2
                 PERFORM WITH TEST AFTER UNTIL choixMenu2 = 0
                         DISPLAY "   -- GESTION VENTE --"
-                    DISPLAY "      -Enregistrer une vente/commande (1)"
+              DISPLAY "      -Enregistrer une vente ou une commande (1)"
                 DISPLAY "      -Mise à jour statut de la commande (2)"
-                        DISPLAY "      -Historique commandes (3)"
-                       DISPLAY "      -Afficher la liste des ventes (4)"
+                        DISPLAY "      -Historique des commandes (3)"
+                        DISPLAY "      -Historique des ventes (3)"
                         DISPLAY "      -RETOUR (0)"
                         ACCEPT choixMenu2
-                        IF choixMenu2 > 5 THEN
+                        IF choixMenu2 > 4 THEN
                         PERFORM WITH TEST AFTER UNTIL choixMenu2 < 4
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
@@ -360,14 +357,16 @@
                         EVALUATE TRUE
                                 WHEN choixMenu2 = 1
                                         PERFORM ENREGISTRER_VENTE
+
                                 WHEN choixMenu2 = 2
                                        PERFORM MAJ_STATUT_COMMANDE
-                                        DISPLAY "2"
+                                       
                                 WHEN choixMenu2 = 3
-                                        DISPLAY "3"
+                                        PERFORM AFFICHER_COMMANDE
+
                                 WHEN choixMenu2 = 4
                                         PERFORM AFFICHER_VENTE
-                        END-EVALUATE
+                        END-EVALUATE                    
                 END-PERFORM
 
                 DISPLAY " "
@@ -395,4 +394,4 @@
 
                 DISPLAY " "
                 PERFORM MENU_EMPLOYE.
-               PERFORM MENU_PRINC.
+                PERFORM MENU_PRINC.
