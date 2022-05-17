@@ -1,7 +1,9 @@
+        *>Cette méthode affiche les différents menu de ce logiciel        
         MENU_PRINC.
 
                 MOVE 0 TO trouveMenu
 
+                *>Choix du type d'utilisateur par l'utilisateur
                 PERFORM WITH TEST AFTER UNTIL trouveMenu =1
                         DISPLAY "--- Choix de l'utilisateur : ---"
                         DISPLAY "0 pour un employe"
@@ -18,16 +20,20 @@
                 END-PERFORM
                 MOVE 0 TO trouveMenu
 
+                *>Evaluation du choix fait par l'utilisateur
                 IF utilisateur = "0" THEN
+                        *>Appel du sous-menu de l'employé
                         PERFORM MENU_EMPLOYE
                 ELSE IF utilisateur = "1" THEN
+                        *>Appel du sous-menu du gérant
                         PERFORM MENU_GERANT
-                ELSE
-                        PERFORM MENU_PRINC                        
-                        *>PERFORM GUIDE_UTILISATEUR
+                ELSE IF utilisateur = "2"    
+                        *>Appel du guid eutilisateur                  
+                        PERFORM GUIDE_UTILISATEUR
                 END-IF.
 
-
+        *>Cette méthode affiche le menu du gérant, c'est-à-dire les
+        *>actions que peut faire le gérant
         MENU_GERANT.
 
                 MOVE 0 TO choixMenu
@@ -117,7 +123,7 @@
                        DISPLAY "      -Afficher la liste des achats (2)"
                         DISPLAY "      -Rechercher comic (3)"
               DISPLAY "      -Consulter l'inventaire de la boutique (4)"
-                        DISPLAY "      -Ajouter un comic en stock(5)"
+                     DISPLAY "      -Ajouter un comic à l'inventaire(5)"
                         DISPLAY "      -Modifier un comic (6)"
                         DISPLAY "      -Supprimer un comic (7)"
                         DISPLAY "      -RETOUR (0)"
@@ -225,7 +231,8 @@
                 PERFORM MENU_GERANT.
                PERFORM MENU_PRINC.
 
-
+        *>Cette méthode affiche le menu de l'employé, c'est-à-dire les
+        *>actions que peut faire l'employé
         MENU_EMPLOYE.
                 DISPLAY "--- MENU EMPLOYE ---"
                 MOVE 0 TO choixMenu

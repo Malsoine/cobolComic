@@ -188,3 +188,4 @@
        COPY "vente.cpy".
        COPY "inventaire.cpy".
        COPY "client.cpy".
+       COPY "guideUtilisateur.cpy".
