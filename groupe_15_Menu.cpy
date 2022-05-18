@@ -321,14 +321,15 @@
                         DISPLAY "   -- GESTION STOCKS --"
                         DISPLAY "      -Rechercher un comic (1)"
               DISPLAY "      -Consulter l'inventaire de la boutique (2)"
+       DISPLAY "      -Afficher la liste des comics de l'inventaire (3)"
                         DISPLAY "      -RETOUR (0)"
 
                         ACCEPT choixMenu2
 
 
-                        IF choixMenu2 > 2 THEN
+                        IF choixMenu2 > 3 THEN
 
-                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 2
+                        PERFORM WITH TEST AFTER UNTIL choixMenu2 < 3
                                 DISPLAY "Ressaisissez !"
                                 ACCEPT choixMenu2
                         END-PERFORM
@@ -341,6 +342,9 @@
                                 WHEN choixMenu2 = 2
 
                                         PERFORM CONSULTER_INVENTAIRE
+        
+                                WHEN choixMenu2 = 3
+                                        PERFORM AFFICHER_COMIC
                         END-EVALUATE
                 END-PERFORM
 

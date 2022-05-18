@@ -1,6 +1,8 @@
            *>Cette méthode enregistre une vente ou une commande en
            *>fonction de si le comic acheté par le client a des
            *>exemplaires en stock ou non
+           *>Elle correspond à la fonctionnalité 'Enregistrer une vente
+           *> ou une commande'
            ENREGISTRER_VENTE.
            MOVE 0 TO trouveVente
            MOVE 0 TO VerifClient
@@ -26,6 +28,48 @@
            *>client qui fait cet achat et on vérifie si il existe dans
            *>le fichier des clients du la boutique ou non
            PERFORM VERIF_CLIENT_VENTE
+           *>Le client n'existe pas dans le fichier fclients donc le 
+           *>crée
+           IF testNomClient = 0 THEN 
+               DISPLAY "Le client n'existe pas, creation !"
+               *>Demande à l'utilisateur de rentrer l'id du client
+               PERFORM WITH TEST AFTER UNTIL testClient = 0
+                    DISPLAY "Entrez le code client"
+                    ACCEPT idClient
+                    PERFORM VERIF_ID_CLIENT                
+               END-PERFORM
+               
+               *>On récupère le nom et prénom du client qui a effectué
+               *>l'achat d'un comic que l'on va enregistrer pour 
+               *>l'utiliser dans l'enregistrement du client que l'on    
+               *>va ajouter
+               MOVE cl_nom TO fc_nom
+               MOVE cl_prenom TO fc_prenom
+
+               *>On demande à l'utilisateur de renter le numéro de 
+               *>téléphone et l'email du client
+               DISPLAY "Entrez le numero de telephone :"
+               DISPLAY "(10 chiffres)"
+               ACCEPT fc_tel
+               DISPLAY "Entrez l'email :"
+               DISPLAY "(xxx@xxx.xx)"
+               ACCEPT fc_mail
+
+               *>Initialisation du nombre de points de fidélité à 0
+               MOVE 0 TO fc_ptsFidelite
+               
+               *>Ecriture du nouveau client dans le fichier fclients
+               OPEN I-O fclients
+               WRITE tamp_fclient
+               END-WRITE
+               CLOSE fclients
+          END-IF
+             
+           IF testNomClient = 1 THEN
+              MOVE idVerifClient TO fv_client
+           ELSE IF testNomClient = 0 THEN
+              MOVE idClient TO fv_client
+           END-IF
            
            *>Rentre la date du système comme date d'achat
            MOVE FUNCTION CURRENT-DATE TO fv_dateVente
@@ -37,8 +81,7 @@
            *>Vérification du nombre d'exemplaire du comic en stock
             PERFORM VERIF_STOCKS
            *>IL y a des exemplaires en stock, on enregistre une vente
-            IF fv_statut = 0 THEN
-                MOVE idVerifClient TO fv_client
+            IF fv_statut = 0 THEN                
                 MOVE idVente TO fv_id
                 MOVE titreRef TO fv_titreComics
 
@@ -55,7 +98,6 @@
             ELSE
                 DISPLAY "Le comic voulu n'a pas d'exemplaire en stock"
                 DISPLAY "On enregistre donc une commande"
-                MOVE idVerifClient TO fv_client
                 MOVE idVente TO fv_id
                 MOVE titreRef TO fv_titreComics
 
@@ -75,10 +117,31 @@
                 OPEN INPUT finventaire
                 MOVE titreRef TO fi_titre
                 READ finventaire
+                *>Le comic n'existe pas
                 INVALID KEY MOVE 0 TO trouveVente
+                *>Le comic existe déjà
                 NOT INVALID KEY MOVE 1 TO trouveVente
-                END-READ
-                CLOSE finventaire.
+                END-READ                
+                CLOSE finventaire
+
+                *>On ferme le fichier puis on le réouvre afin que le
+                *>pointeur qui parcourt le fichier repart depuis le 
+                *>début de celui-ci
+                *>On affiche les comics présents dans l'inventaire
+                IF trouveVente = 0
+                THEN 
+                     OPEN INPUT finventaire
+                     DISPLAY "Liste des comics present en inventaire"
+                     PERFORM WITH TEST AFTER UNTIL Wfin =0
+                        READ finventaire NEXT
+                        AT END 
+                         MOVE 0 TO Wfin
+                        NOT AT END DISPLAY fi_titre
+                          DISPLAY "----------------"
+                        END-READ
+                     END-PERFORM
+                     CLOSE finventaire
+                END-IF.
 
            *>Cette méthode demande à l'utilisateur d'entrer le nom et
            *>prénom d'un client, si celui-ci n'existe pas alors on le
@@ -106,11 +169,6 @@
                        END-IF
                        END-READ
                    END-PERFORM
-                   *>Le client n'existe pas, on le créé
-                   IF testNomClient = 0 THEN
-                   DISPLAY "Le client n'existe pas , creation !"
-                        PERFORM AJOUT_CLIENT
-                   END-IF
                    CLOSE fclients.
 
            *>Cette méthode vérifie si l'id de la vente donné est déjà
@@ -144,7 +202,8 @@
                      CLOSE fventes
                 END-IF.
                 
-           *>Cette méthode récupère le prix unitaire de vente d'un
+           *>Cette méthode récupère le prix unitaire de vente qui est 
+           *>défini dans le fichier finventaire et cela pour un 
            *>comic dont le titre est donné
            RECUPERER_PRIX_DE_VENTE.
                 OPEN INPUT finventaire
@@ -184,9 +243,8 @@
                 INVALID KEY
                         DISPLAY "Erreur : ce client n'existe pas"
                 NOT INVALID KEY
-                        *>MOVE fc_ptsFidelite TO LatentPoint
+                        *>AJout d'1 pts de fidelité au client
                         ADD 1 TO fc_ptsFidelite END-ADD
-                        *>MOVE LatentPoint TO fc_ptsFidelite
                         REWRITE tamp_fclient
                     INVALID KEY 
          DISPLAY "Erreur concernant la mise à jour des pts de fidelites"
@@ -218,6 +276,8 @@
  
            *>Cette méthode permet de mettre à jour le status d'une
            *>commande
+           *>Elle correspond à la fonctionnalité 'Mettre à jour une 
+           *>commande'
            MAJ_STATUT_COMMANDE.
            MOVE 0 TO idCommande
            MOVE 0 TO verifStatut 
@@ -268,6 +328,8 @@
 
            *>Cette méthode calcul le chiffre d'affaire de la boutique
            *>à une date donnée
+           *>Elle correspond à la fonctionnalité 'consulter des 
+           *>statistiques "gérant" '
            CALCULER_CHIFFRE_AFFAIRE. 
            MOVE 0 TO CA
            MOVE 0 TO nbVente
@@ -313,6 +375,8 @@
           
           *>Cette méthode affiche l'historique des commandes 
           *>du magasin      
+          *>Elle correspond à la fonctionnalité 'Accéder à l'historique
+          *>des commandes'
            AFFICHER_COMMANDE. 
                 OPEN INPUT fventes
                 MOVE 1 TO Wfin
@@ -336,6 +400,8 @@
                 CLOSE fventes.
           
            *>Cette méthode affiche la liste des ventes du magasin
+           *>Elle correspond à la fonctionnalité 'Accéder à l'historique
+          *>des ventes'
            AFFICHER_VENTE.
                 MOVE 1 TO Wfin
                 OPEN INPUT fventes               

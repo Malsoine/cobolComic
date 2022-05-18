@@ -1,5 +1,7 @@
            *>Cette méthode permet d'ajouter un nouveau client au fichier
            *>des clients du magasin
+           *>Elle correspond à la fonctionnalité 'Ajouter un client
+           *>fidèle'
            AJOUT_CLIENT.
            OPEN INPUT fclients
            MOVE 0 TO fichierFin
@@ -44,13 +46,7 @@
 
            *>On recherche si l'id donné par l'utilisateur existe déjà
            *>Dans le fichier des clients du magasin
-           MOVE cl_id TO fc_id
-           READ fclients
-           KEY IS fc_id
-           INVALID KEY MOVE 0 TO testClient
-           NOT INVALID KEY MOVE 1 TO testClient
-           END-READ
-           CLOSE fclients
+           PERFORM VERIF_ID_CLIENT          
 
            *>L'id ou le nom/prénom du client donné par l'utilisateur
            *>existe déjà dans le fichier des clients de la boutique
@@ -77,7 +73,43 @@
                CLOSE fclients
            END-IF.
 
+           *>Cette méthode vérifie si l'id du client existe déjà ou non
+           *>dans le fichier fclients qui regourpe l'ensemble des
+           *>clients de la boutique
+           VERIF_ID_CLIENT.
+                MOVE 0 TO testClient
+                MOVE 1 TO Wfin
+                OPEN INPUT fclients
+                MOVE idClient TO fc_id
+                READ fclients
+                *>L'id du client n'est attribué à aucun client
+                INVALID KEY MOVE 0 TO testCLient
+                *>L'id rentré existe déjà
+                NOT INVALID KEY MOVE 1 TO testClient
+                END-READ
+                CLOSE fclients
+                *>On ferme le fichier puis on le réouvre afin que le
+                *>pointeur qui parcourt le fichier repart depuis le 
+                *>début de celui-ci
+                *>On affiche les identifiants déjà attribués
+                IF testClient = 1
+                THEN 
+                     OPEN INPUT fclients
+                     DISPLAY "Liste des identifiants deja attribues"
+                     PERFORM WITH TEST AFTER UNTIL Wfin =0
+                        READ fclients NEXT
+                        AT END 
+                         MOVE 0 TO Wfin
+                        NOT AT END DISPLAY fc_id
+                          DISPLAY "----------------"
+                        END-READ
+                     END-PERFORM
+                     CLOSE fclients
+                END-IF.
+
            *>Cette méthode permet de supprimer un client du fichier
+           *>Elle correspond à la fonctionnalité 'Supprimer un client
+           *>fidèle'
            SUPPR_CLIENT.
            MOVE 0 to choixSupprClient
            MOVE 0 TO fichierFin
@@ -150,6 +182,8 @@
 
            *>Cette méthode permet de consulter les points de fidélités
            *>d'un client 
+           *>Elle correspond à la fonctionnalité 'Consulter les points
+           *>de fidelité'
            CONSULTER_PTS_FIDELITE.
            OPEN INPUT fclients
            MOVE 0 TO fichierFin
@@ -183,6 +217,8 @@
 
            *>Cette méthode permet de modifier certaines informations
            *>d'un client : mail, téléphone
+           *>Elle correspond à la fonctionnalité 'Modifier les 
+           *>informations d'un client'
            MODIFIER_INFO_CLIENT.
            OPEN INPUT fclients
            MOVE 0 TO testNomClient
@@ -237,6 +273,8 @@
 
            *>Cette méthode permet d'afficher la liste des clients
            *>du magasin de comic
+           *>Elle correspond à la fonctionnalité 'Afficher la liste 
+           *>des clients'
            AFFICHER_LISTE_CLIENTS.
            OPEN INPUT fclients
            MOVE 0 TO fichierFin
@@ -252,6 +290,8 @@
                DISPLAY "Prenom : ",fc_prenom
                DISPLAY "Identifiant : ", fc_id
                DISPLAY "Nombre de pts de fidelites : ", fc_ptsFidelite
+               DISPLAY "Numéro de telephone :", fc_tel
+               DISPLAY "Email :", fc_mail
                END-READ
            END-PERFORM
            CLOSE fclients.
@@ -259,6 +299,8 @@
 
            *>Cette méthode permet de consulter plusieur statistiques 
            *>concernant les clients de la boutique
+           *>Elle correspond à la fonctionnalité 'Consulter des 
+           *>statistiques "employé"'
            STATISTIQUES_CLIENT.
            OPEN INPUT fclients
            MOVE 0 TO choixSupprClient

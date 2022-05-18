@@ -4,6 +4,8 @@
         *>Pour avoir un nouveau comic dans l'inventaire et qu'il ait
         *>des exemplaires en stock, il faut passer par la méthode
         *>ENREGISTRER_ACHAT
+        *>Elle correspond à la fonctionnalité 'Ajouter une référence
+        *>dans l'inventaire'
         AJOUTER_REFERENCE.
                 *>On demande à l'utilisateur de rentrer l'id de la réf
                 PERFORM WITH TEST AFTER UNTIL trouve=0
@@ -120,6 +122,7 @@
 
         *>Cette méthode supprime la référence du comic dont le titre
         *>est demandé à l'utilisateur dans le fichier
+        *>Elle correspond à la fonctionnalité 'Supprimer une référence'
         SUPPRIMER_REFERENCE.
                 MOVE 0 TO trouve
                 DISPLAY "Entrez le nom du comic à supprimer"
@@ -138,6 +141,7 @@
 
         *>Cette méthode recherche une référence dans le fichier selon
         *>l'option choisie (avec le titre ou le nom de l'auteur)
+        *>Elle correspond à la fonctionnalité 'Rechercher un comic'
         RECHERCHER_REFERENCE.
         *>On demande à l'utilisateur de choisir l'option de recherche
         DISPLAY "Chercher avec le titre (1) ou l'auteur (2) du comic?"
@@ -198,6 +202,8 @@
                 CLOSE finventaire.
 
         *>Cette méthode modifie le prix unitaire de vente d'un comic
+        *>Elle correspond à la fonctionnalité 'Modifier le prix de 
+        *>vente d'un comic'
         MODIFIER_PRIX_COMIC.
        DISPLAY "Entrez le nom du comic que vous voulez modifier le prix"
             ACCEPT titreRef
@@ -228,6 +234,7 @@
         *>selon 2 options possibles (ceux ayant des exemplaires en stock
         *>ou ceux qui sont commandables c'est-à-dire qu'ils n'ont pas
         *>d'exemplaires en stock)
+        *>Elle correspond à la fonctionnalité 'Consulter l'inventaire'
         CONSULTER_INVENTAIRE.
        DISPLAY "Afficher les comics en stock (1)"
        DISPLAY "OU ceux que ne le sont pas (2)?"
@@ -279,6 +286,8 @@
 
         *>Cette méthode affiche l'ensemble des comics présents dans 
         *>l'inventaire du magasin
+        *>Elle correspond à la fonctionnalité 'Afficher la liste des
+        *>comics'
         AFFICHER_COMIC.
                 OPEN INPUT finventaire
                 MOVE 1 TO Wfin

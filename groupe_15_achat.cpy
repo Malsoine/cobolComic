@@ -1,5 +1,7 @@
          *>Cette méthode permet d'enregistrer un nouvel achat dans
          *>le fichier  
+         *>Elle correspond à la fonctionnalité 'Enregistrer l'achat
+         *>d'un comic'
          ENREGISTRER_ACHAT.
 
                 *>Demande à l'utilisateur de rentrer l'id de l'achat
@@ -154,6 +156,7 @@
 
         *>Cette méthode affiche l'ensemble des achats présents dans le
         *>fichier achat
+        *>ELle correspond à la fonctionnalité 'Affichage des achats'
         AFFICHER_ACHAT. 
                 OPEN INPUT fachats
                 MOVE 1 TO Wfin
